@@ -1,3 +1,5 @@
-CREATE IF NOT EXISTS TABLE 
+CREATE IF NOT EXISTS TABLE HotelChain (
+    
+);
 
 
