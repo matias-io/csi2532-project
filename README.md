@@ -18,7 +18,7 @@ CSI 2532 - Project
 
 ---
 
-## hôtel
+## Hôtel
 
 -- le nombre de chambres
 
@@ -75,9 +75,6 @@ supplémentaire)
     -- leur numéro de sécurité sociale / NAS.
 
     -- Employee roles (Les employés peuvent avoir différents rôles / postes dans un hôtel.)
-
-
-
 
 
 ---
