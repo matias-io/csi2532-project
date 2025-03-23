@@ -54,7 +54,6 @@ public class csiController {
     @PostMapping("/post/{tableName}")
 public ResponseEntity<?> postToTable(@PathVariable String tableName, @RequestBody Object requestBody) {
     try {
-        // Call the /metadata/columns/{tableName} endpoint to get the columns for the table
         String metadataUrl = "http://localhost:8080/metadata/columns/" + tableName; // Updated URL
         HttpEntity<Void> entity = new HttpEntity<>(createHeaders());
         ResponseEntity<String> metadataResponse = restTemplate.exchange(metadataUrl, HttpMethod.GET, entity, String.class);
@@ -63,7 +62,6 @@ public ResponseEntity<?> postToTable(@PathVariable String tableName, @RequestBod
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to fetch metadata for table: " + tableName);
         }
 
-        // Post data to the table
         String postUrl = supabaseUrl + "/rest/v1/" + tableName;
         HttpEntity<Object> postEntity = new HttpEntity<>(requestBody, createHeaders());
         ResponseEntity<String> postResponse = restTemplate.exchange(postUrl, HttpMethod.POST, postEntity, String.class);
@@ -76,7 +74,6 @@ public ResponseEntity<?> postToTable(@PathVariable String tableName, @RequestBod
                     .body("Failed to insert data into table: " + tableName + ". Metadata: " + metadataResponse.getBody());
         }
     } catch (Exception e) {
-        // In case of exception, still include metadata URL's response, if possible
         String metadataUrl = "http://localhost:8080/metadata/columns/" + tableName;
         HttpEntity<Void> entity = new HttpEntity<>(createHeaders());
         try {
