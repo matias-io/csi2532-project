@@ -1,20 +1,16 @@
 CSI 2532 - Project
 
-# THIS PROJECT CONTAINS API KEYS; 
+# THIS PROJECT CONTAINS API KEYS
 
-# PLEASE DO NOT MAKE THIS PUBLIC & LEAK THEM.
+# PLEASE DO NOT MAKE THIS PUBLIC & LEAK THEM
 
 
 ---
-
-
 
 The API keys can be found in [application.properties
 ](backend/src/main/resources/application.properties)
 
 ---
-
-
 
 # Attributes
 
