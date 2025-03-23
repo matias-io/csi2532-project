@@ -86,12 +86,4 @@ public ResponseEntity<?> postToTable(@PathVariable String tableName, @RequestBod
         }
     }
 }
-
-    
-
-    @PutMapping
-    public void Put(){
-        
-    }
-
 }
