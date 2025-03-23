@@ -12,6 +12,8 @@ CSI 2532 - Project
 The API keys can be found in [application.properties
 ](backend/src/main/resources/application.properties)
 
+
+PLEASE READ THE [Backend](Backend.md) file! It explains exactly how the backend works. 
 ---
 
 
