@@ -1,4 +1,4 @@
-# Gentelman
+# Gentleman
 
 Thank you and welcome.
 
@@ -71,13 +71,9 @@ You can install postman here : `https://www.postman.com/downloads/`
 
 Once you have postman, you can follow the instructions, and run it.
 
-
-
 You need to run the springboot server locally before you can access any of this :
 
 To do so, you can goto  [csiController](backend/src/main/java/com/example/csi/controller/csiController.java) or any of the other Java files, and just run it normally from the VS CODE Run button. This for me works best. Do not try to complile it as it becomes a hot mess when you need to complie all 4 java files before you run it.
-
-
 
 Inside postman you add the URL, ` POST (Dropdown) > http://localhost:8080/post/client > BODY > RAW > {Add the JSON in there} > SEND`
 
@@ -97,16 +93,13 @@ You can do a lot of different things too :)
 
 ---
 
-
-
 One other method I have is the [metadata class](backend/src/main/java/com/example/csi/controller/metadataController.java). It's just helper methods. For example, you can do
 
-  `http://localhost:8080/metadata/column/{tableName} ` 
+  `http://localhost:8080/metadata/column/{tableName} `
 
 where table name follows the same TableName convension as before. It will return the Columns in the table Name
 
-
-You can also do : 
+You can also do :
 
 `code`  // THIS WILL RETURN ALL THE tables in
 
@@ -114,7 +107,7 @@ And
 
 `http://localhost:8080/metadata/tableTree`  // THIS will allow you to vizualize the TableStructure :)
 
-there are other methods which you can find [here](backend/src/main/java/com/example/csi/controller/csiController.java) , but imo, these are the only 3 you need to know about. The others are mostly helper methods to allow the tableTree to work. 
+there are other methods which you can find [here](backend/src/main/java/com/example/csi/controller/csiController.java) , but imo, these are the only 3 you need to know about. The others are mostly helper methods to allow the tableTree to work.
 
 ---
 
