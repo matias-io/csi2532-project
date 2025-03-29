@@ -1,5 +1,7 @@
 package com.example.csi.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
@@ -112,9 +114,6 @@ public class csiController {
             String deleteUrl = supabaseUrl + "/rest/v1/" + tableName + "?" + primaryKey + "=eq." + id;
             ResponseEntity<String> deleteResponse = restTemplate.exchange(deleteUrl, HttpMethod.DELETE, deleteEntity, String.class);
     
-            System.out.println("Status code: " + deleteResponse.getStatusCode().value());
-            System.out.println("Response body: " + deleteResponse.getBody());
-    
             if (deleteResponse.getStatusCode().is2xxSuccessful()) {
                 if (deleteResponse.getBody() == null || deleteResponse.getBody().equals("[]")) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No record found to delete with id: " + id + "(Status = 404)");
@@ -129,4 +128,54 @@ public class csiController {
                     .body("Error: " + e.getMessage() + " (Error code: 500)");
             }
     }
+
+
+    @PutMapping("/update/{tableName}")
+    public ResponseEntity<?> updateTableData(@PathVariable String tableName, @RequestBody Map<String, Object> requestBody) {
+        try {
+            String metadataUrl = "https://test-deployment-iq7z.onrender.com/metadata/primaryKey/" + tableName;
+            HttpEntity<Void> entity = new HttpEntity<>(createHeaders());
+            ResponseEntity<String> metadataResponse = restTemplate.exchange(metadataUrl, HttpMethod.GET, entity, String.class);
+
+            if (!metadataResponse.getStatusCode().is2xxSuccessful() || metadataResponse.getBody() == null) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to fetch primary key for table: " + tableName);
+            }
+
+            String primaryKey = metadataResponse.getBody().replaceAll("[\\[\\]\"]", "");
+
+          
+            Object idObj = requestBody.get(primaryKey);
+            if (idObj == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Primary key (id) is required in the request body.");
+            }
+
+            String id = String.valueOf(idObj); 
+
+            HttpHeaders headers = createHeaders();
+            headers.set("Prefer", "return=representation");
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+        
+            HttpEntity<Map<String, Object>> PUTEntity = new HttpEntity<>(requestBody, headers);
+            String PUTUrl = supabaseUrl + "/rest/v1/" + tableName + "?" + primaryKey + "=eq." + id;
+            ResponseEntity<String> PUTResponse = restTemplate.exchange(PUTUrl, HttpMethod.PUT, PUTEntity, String.class);
+
+            if (PUTResponse.getStatusCode().is2xxSuccessful()) {
+                if (PUTResponse.getBody() == null || PUTResponse.getBody().equals("[]")) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No record found to update with id: " + id + " (Status = 404)");
+                } else {
+                    return ResponseEntity.ok("Successfully updated " + requestBody.keySet() + " in table: " + tableName + " (Status = 200)");
+                }
+            } else {
+                return ResponseEntity.status(PUTResponse.getStatusCode())
+                    .body("Failed to update data in table: " + tableName + " (Error code: " + PUTResponse.getStatusCode().value() + ")");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Error: " + e.getMessage() + " (Error code: 500)");
+        }
+    }
+
+
+
 }
