@@ -8,7 +8,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Random;
 
-public class dummydata {
+public class Clientdummydata {
 
     // Arrays of sample names and addresses
     private static final String[] FIRST_NAMES = {"John", "Jane", "Michael", "Sara", "David", "Emily"};
