@@ -1,0 +1,56 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .button-list {
+            list-style: none;
+            padding: 0;
+        }
+        .button-list li {
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 200px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hotel Selection</h1>
+    <ul class="button-list">
+        <li><button onclick="navigate('Hotel 1')">Hotel 1</button></li>
+        <li><button onclick="navigate('Hotel 2')">Hotel 2</button></li>
+        <li><button onclick="navigate('Hotel 3')">Hotel 3</button></li>
+    </ul>
+
+    <script>
+        function navigate(hotelName) {
+            const encodedName = encodeURIComponent(hotelName);
+            window.location.href = `hotel.html?title=${encodedName}`;
+        }
+    </script>
+</body>
+</html>
