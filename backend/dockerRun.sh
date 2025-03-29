@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 OWNER=$(stat -f %Su dockerRun.sh)
 
 if [[ "$OWNER" != "adityabaindur" ]]; then
@@ -23,13 +22,11 @@ read -s response
 response=$(echo "$response" | tr '[:upper:]' '[:lower:]')
 
 if [[ "$response" != "$correct_password" ]]; then
-  echo "Exiting script. ......You chose not to proceed as you CANNOT PUSH......"
+  echo "Exiting script. ......You chose not to proceed, WRONG PASSWORD..."
   exit 1
 fi
 
-
 echo "Proceeding with the Docker build and push..."
-
 
 check_docker_running() {
   docker_info=$(docker info 2>/dev/null)
@@ -61,15 +58,39 @@ fi
 echo "Docker is now running. Proceeding with the script..."
 
 echo "cleaning"
-mvn clean package # Clean the build; It makes the JAR file
+mvn clean package
 
 echo "docker building"
-docker buildx build --platform linux/amd64 -t test-deployment -f Dockerfile.backend . #This builds the Dockerfile
+docker buildx build --platform linux/amd64 -t test-deployment -f Dockerfile.backend .
 
-# echo "docker tagging"
-# docker tag test-deployment thekillerbkill/test-deployment:latest #This tags it to me, so basically names me as creator and owner
+echo "docker tagging"
+docker tag test-deployment thekillerbkill/test-deployment:latest
 
-# echo "docker pushing to my repo"
-# docker push thekillerbkill/test-deployment:latest #This actually pushes it to the Docker Hub
+echo "docker pushing to my repo"
+docker push thekillerbkill/test-deployment:latest
 
-# You can see the current deployment at: https://hub.docker.com/repository/docker/thekillerbkill/test-deployment/general
+render_deploy() {
+  echo "Deploying to Render..."
+  render deploys create srv-cvg7ph9opnds73bfuafg --confirm
+  if [[ $? -eq 0 ]]; then
+    echo "Render deployment successful."
+  else
+    echo "Render deployment failed."
+  fi
+}
+
+
+
+echo "Would you like to deploy to Render? (yes/no)"
+read deploy_choice
+
+deploy_choice=$(echo "$deploy_choice" | tr '[:upper:]' '[:lower:]')
+
+if [[ "$deploy_choice" == "yes" ]]; then
+  render_deploy
+else
+  echo "Skipping Render deployment."
+fi
+
+echo "Script execution completed."
+
