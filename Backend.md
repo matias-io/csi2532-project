@@ -4,7 +4,7 @@ Thank you and welcome.
 
 Here, I go over the basics of what I wrote in the backend folder.
 
-First of all, if you do not know how API's and springboot work and are curious to learn more, please make sure to visit this video; Very helpful and exactly how I learned springBoot : https://www.youtube.com/watch?v=31KTdfRH6nY
+First of all, if you do not know how API's and springboot work and are curious to learn more, please make sure to visit this video; Very helpful and exactly how I learned springBoot : `https://www.youtube.com/watch?v=31KTdfRH6nY`
 
 If you don't have time, or simply are not interested, here are the basics :
 
