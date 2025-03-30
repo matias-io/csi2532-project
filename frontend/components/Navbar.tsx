@@ -1,14 +1,19 @@
 import Link from 'next/link';
-import { Button } from '@/components/ui/button'; // Adjust the path based on your project structure
+import { Button } from '@/components/ui/button'; 
+import { getUserSession } from '@/lib/session';
 
-export default function Navbar() {
+
+
+export default async function Navbar() {
+
+  const user = await getUserSession()
   return (
     <header className="bg-primary text-primary-foreground py-6 pb-8">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold">HotelConnected</h1>
-            <p className="text-sm md:text-base opacity-90">Book rooms across North America's top hotel chains</p>
+            <p className="text-sm md:text-base opacity-90">Book rooms across North America&apos;s top hotel chains. Hello {JSON.stringify(user)}</p>
           </div>
           <div className="flex gap-4">
             <Button variant="secondary" asChild>
