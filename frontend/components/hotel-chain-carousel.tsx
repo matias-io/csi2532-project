@@ -57,7 +57,7 @@ const hotelChains = [
 
 export function HotelChainCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null)
-  const [scrollPosition, setScrollPosition] = useState(0)
+  const [, setScrollPosition] = useState(0)
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
