@@ -12,9 +12,9 @@ import Link from "next/link"
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 
-export default function LoginPage() {
+function LoginPage() {
   const router = useRouter()
   const [status, setStatus] = useState<string | null>(null)
 
@@ -181,3 +181,10 @@ export default function LoginPage() {
   )
 }
 
+export default function LoginPageSuspense(){
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+        <LoginPage />
+        </Suspense>
+    )
+}
