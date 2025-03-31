@@ -32,7 +32,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     const { name, sin, address } = formData;
-    setGoogleButtonEnabled(name  && sin && address);
+    setGoogleButtonEnabled(!!(name && sin && address)); 
   }, [formData]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
