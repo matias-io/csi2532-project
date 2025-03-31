@@ -12,7 +12,10 @@ import Link from "next/link"
 import { useRouter } from 'next/navigation'
 import { useSearchParams } from 'next/navigation'
 
+
 import { useState, useEffect, Suspense } from "react"
+
+export const runtime = 'edge';
 
 function LoginPage() {
   const router = useRouter()
