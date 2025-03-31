@@ -12,7 +12,7 @@ import { HotelChainCarousel } from "@/components/hotel-chain-carousel"
 
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
-
+export const runtime = 'nodejs' 
 
 export default function Home() {
   return (
