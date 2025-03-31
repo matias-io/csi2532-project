@@ -9,6 +9,7 @@ const GOOGLE_CLIENT_ID = process.env.CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.CLIENT_SCECRET;
 
 
+
 const authOptions: NextAuthOptions = {
     session: {
         strategy: "jwt",
