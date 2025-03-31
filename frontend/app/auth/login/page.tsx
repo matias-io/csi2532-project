@@ -160,7 +160,7 @@ export default function LoginPage() {
                   <Button
                     variant="outline"
                     className="w-full"
-                    onClick={handleSignup}
+                    onClick={(e) => { e.preventDefault(); handleSignup(e as unknown as React.FormEvent<HTMLFormElement>); }}
                     disabled={!isGoogleButtonEnabled}
                     type="submit"
                   >
