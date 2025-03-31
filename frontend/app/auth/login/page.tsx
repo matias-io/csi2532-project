@@ -15,7 +15,6 @@ import { useSearchParams } from 'next/navigation'
 
 import { useState, useEffect, Suspense } from "react"
 
-export const runtime = 'edge';
 
 function LoginPage() {
   const router = useRouter()
