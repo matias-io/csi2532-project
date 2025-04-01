@@ -32,13 +32,13 @@ export default function Navbar() {
           </Link>
           <div className="flex gap-4">
             <Button variant="secondary" asChild>
-              <Link href="/auth/login">Login</Link>
+              <Link href="/login">Login</Link>
             </Button>
             <Button variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white" asChild>
               <Link href="/auth/login?value=signup">Register</Link>
             </Button>
             <Button variant="destructive" className="bg-red-900 text-white border-red-600 hover:bg-red-600" asChild>
-              <Link href="/auth/login">Staff Login</Link>
+              <Link href="/login">Staff Login</Link>
             </Button>
           </div>
         </div>

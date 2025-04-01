@@ -1,14 +1,18 @@
-import { login, signup } from './actions'
-
+import { Suspense } from "react"
+import Footer from "@/components/Footer"
+import Navbar from "@/components/Navbar"
+import LoginForm from "./login-form"
+export const runtime = 'nodejs' 
 export default function LoginPage() {
   return (
-    <form>
-      <label htmlFor="email">Email:</label>
-      <input id="email" name="email" type="email" required />
-      <label htmlFor="password">Password:</label>
-      <input id="password" name="password" type="password" required />
-      <button formAction={login}>Log in</button>
-      <button formAction={signup}>Sign up</button>
-    </form>
+    <main className="flex min-h-screen flex-col">
+      <Navbar />
+      <div className="flex flex-1 items-center justify-center bg-muted/30 py-12 px-4">
+        <Suspense fallback={<div>Loading...</div>}>
+          <LoginForm />
+        </Suspense>
+      </div>
+      <Footer />
+    </main>
   )
 }
