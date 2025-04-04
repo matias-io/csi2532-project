@@ -5,8 +5,8 @@ import { NextAuthOptions } from "next-auth";
 import NextAuth from 'next-auth/next';
 import GoogleProvider from "next-auth/providers/google";
 
-const GOOGLE_CLIENT_ID = process.env.CLIENT_ID;
-const GOOGLE_CLIENT_SECRET = process.env.CLIENT_SCECRET;
+const GOOGLE_CLIENT_ID = process.env.CLIENT_ID!
+const GOOGLE_CLIENT_SECRET = process.env.CLIENT_SECRET!
 
 
 
@@ -18,8 +18,8 @@ const authOptions: NextAuthOptions = {
     },
     providers: [
         GoogleProvider({
-            clientId: GOOGLE_CLIENT_ID ?? "",
-            clientSecret: GOOGLE_CLIENT_SECRET ?? ""
+            clientId: GOOGLE_CLIENT_ID,
+            clientSecret: GOOGLE_CLIENT_SECRET
             // profile(profile: GoogleProfile) {
             //     return {
             //         id: profile.sub,
@@ -30,22 +30,27 @@ const authOptions: NextAuthOptions = {
             // },
         }),
     ],
-      pages: {
-    signIn: '/auth/signin',  // Custom sign-in page
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-    callbacks: {
-        async signIn({ account, profile }) {
-            if (!profile?.email && !account?.provider) {
-                throw new Error("Not found");
-            }
-            // if (account?.provider === "google") {
-            //     return profile?.email_verified && profile.email.endsWith("@example.com")
-            // }
-        return true // Do different verification for other providers that don't have `email_verified`
-        },
-    }
+//     pages: {
+//     signIn: '/auth/signin',  // Custom sign-in page
+//     },
+//   secret: process.env.NEXTAUTH_SECRET,
+//     callbacks: {
+//         async signIn({ account, profile }) {
+//             if (!profile?.email && !account?.provider) {
+//                 throw new Error("Not found");
+//             }
+//             // if (account?.provider === "google") {
+//             //     return profile?.email_verified && profile.email.endsWith("@example.com")
+//             // }
+//         return true // Do different verification for other providers that don't have `email_verified`
+//         },
+//     }
 }
 
-const handler = NextAuth(authOptions)
-export { handler as GET, handler as POST }
+let handler;
+try {
+    handler = NextAuth(authOptions);
+} catch (error) {
+    console.error("Error in NextAuth handler:", error);
+}
+export { handler as GET, handler as POST };

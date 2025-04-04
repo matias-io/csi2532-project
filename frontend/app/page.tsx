@@ -12,7 +12,6 @@ import { HotelChainCarousel } from "@/components/hotel-chain-carousel"
 
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
-export const runtime = 'nodejs' 
 
 export default function Home() {
   return (
@@ -59,7 +58,9 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="mt-4 flex justify-end">
-                    <Button className="w-full md:w-auto">Search Available Rooms</Button>
+                    <Button className="w-full md:w-auto">
+                      <Link href="/search"> Search Available Rooms </Link>
+                    </Button>
                   </div>
                 </TabsContent>
                 <TabsContent value="reservations">
@@ -70,7 +71,7 @@ export default function Home() {
                       Login to see your upcoming and past bookings
                     </p>
                     <Button variant="secondary" asChild>
-                      <Link href="/login">Login to View</Link>
+                      <Link href="/auth/login">Login to View</Link>
                     </Button>
                   </div>
                 </TabsContent>

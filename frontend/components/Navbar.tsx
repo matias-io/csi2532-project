@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 // import { getUserSession } from '@/lib/session';
 
 
-import { useSession } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 
 
 export default function Navbar() {
@@ -30,6 +30,9 @@ export default function Navbar() {
             <p className="text-sm md:text-base opacity-90">Book rooms across North America&apos;s top hotel chains. Hello {session?.user?.name}!</p>
           </div>
           </Link>
+
+          {(!session) ? (
+
           <div className="flex gap-4">
             <Button variant="secondary" asChild>
               <Link href="/auth/login">Login</Link>
@@ -41,6 +44,17 @@ export default function Navbar() {
               <Link href="/auth/login">Staff Login</Link>
             </Button>
           </div>
+          ) : (
+            <div className="flex gap-4">
+            <Button variant="secondary" asChild>
+              <Link href="/auth/login">My Account</Link>
+            </Button>
+            <Button variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white" onClick={() => signOut()}>
+              Logout
+            </Button>
+            </div>
+          )}
+
         </div>
       </div>
     </header>

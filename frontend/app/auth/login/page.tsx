@@ -2,7 +2,7 @@ import { Suspense } from "react"
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
 import LoginForm from "./login-form"
-export const runtime = 'nodejs' 
+
 export default function LoginPage() {
   return (
     <main className="flex min-h-screen flex-col">
