@@ -28,8 +28,6 @@ import Navbar from '@/components/Navbar';
 export default function HotelsPage() {
   return (
     <main className="min-h-screen bg-muted/30">
-
-        <Navbar />
       <div className="bg-primary text-primary-foreground py-8">
         <div className="container mx-auto px-4">
           <h1 className="text-2xl md:text-3xl font-bold mb-6">Find Your Perfect Hotel</h1>

@@ -16,8 +16,6 @@ import Navbar from '@/components/Navbar';
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col">
-      <Navbar />
-
       <section className="bg-primary text-primary-foreground pb-8 pt-2">
         <div className="container mx-auto px-4">
           <Card className="bg-white/5 border-white/10">

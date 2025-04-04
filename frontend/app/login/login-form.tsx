@@ -16,7 +16,6 @@ export default function LoginForm() {
   const router = useRouter()
   const [status, setStatus] = useState<string | null>(null)
   const searchParams = useSearchParams()
-  const tabValue = searchParams.get('value')
 
   // All your existing form state and handlers
   const [formData, setFormData] = useState({
@@ -69,7 +68,7 @@ export default function LoginForm() {
         <CardDescription>We only use your Google account for login. Please continue below with Google OAuth.</CardDescription>
       </CardHeader>           
       <CardContent>
-        <Tabs defaultValue={(tabValue !== "signup" ? "login" : "signup")} className="w-full">
+        <Tabs className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="login">Customer Login</TabsTrigger>
             <TabsTrigger value="signup">Customer Signup</TabsTrigger>
