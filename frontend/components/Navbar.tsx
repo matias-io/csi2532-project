@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import {
   SignInButton,
+  SignUp,
+  SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,
@@ -24,7 +26,10 @@ export default function Navbar({ username }: { username?: string }) {
 
           <div className="flex gap-4">
             <SignedOut>
-              <SignInButton mode="modal" />
+              <SignInButton  />
+            </SignedOut>
+            <SignedOut>
+              <SignUpButton  />
             </SignedOut>
 
             <SignedIn>
