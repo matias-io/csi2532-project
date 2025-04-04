@@ -10,7 +10,7 @@ export default function Home() {
           <p className="text-lg mb-8">Please select your role to continue:</p>
           <div className="space-x-4">
             <a
-              href="/customer"
+              href="/sign-in"
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition duration-300"
             >
               Login as Customer
