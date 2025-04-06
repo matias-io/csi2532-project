@@ -4,7 +4,7 @@ const isProtectedRoute = createRouteMatcher([
   '/user',
   '/sign-up/aftersignup',
   '/dashboard',
-  '/search/hotels/:hid'
+  '/search/hotels/:hid*'
   
 ]);
 

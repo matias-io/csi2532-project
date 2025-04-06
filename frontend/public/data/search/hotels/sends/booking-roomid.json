@@ -1,0 +1,54 @@
+[
+    "the book now button from user side sends the following request to the server:",
+    {
+        "userId": "user_123",
+        "hotelId": "hotel_456",
+        "roomId": "room_789",
+        "startDate": "2025-06-01T00:00:00Z",
+        "endDate": "2025-06-05T00:00:00Z",
+        "guestCount": 2,
+        "paymentMethod": "credit_card",
+        "totalPrice": 1200.00,
+        "guestInfo": {
+            "name": "John Doe",
+            "email": "john@example.com",
+            "phone": "+1234567890"
+        }
+    },
+    
+    "the response from the server can be just the request or a json like",
+    {
+        "success": true,
+        "bookingId": "BKG-ABC123",
+        "message": "Booking confirmed",
+        "bookingDetails": {
+            "hotelName": "Grand Hotel",
+            "roomType": "Deluxe",
+            "dates": {
+            "checkIn": "2025-06-01",
+            "checkOut": "2025-06-05"
+            },
+            "totalPrice": 1200.00
+        }
+    },
+
+    "a failure looks like",
+    {
+        "success": false,
+        "error": "Missing required fields",
+        "details": ["startDate", "endDate"]
+    },
+
+    {
+        "success": false,
+        "error": "Authentication required"
+    },
+
+    {
+        "success": false,
+        "error": "Room not available for selected dates"
+    }
+
+
+
+]

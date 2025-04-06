@@ -1,182 +1,407 @@
+// app/search/hotels/[hid]/page.tsx
+"use client"
+
+import { useState } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Badge } from "@/components/ui/badge"
-import { BedDoubleIcon, CheckIcon, CoffeeIcon, MapPinIcon, StarIcon, WifiIcon } from "lucide-react"
-import Image from "next/image"
+import { StarIcon, MapPinIcon, WifiIcon, CoffeeIcon } from "lucide-react"
+// import { DatePickerWithRange } from "@/components/date-range-picker"
+import { useUser } from "@clerk/nextjs"
+import { useEffect } from "react"
 
-export default function HotelDetailPage({ params }: { params: { hid: string } }) {
-  // This would normally fetch hotel data based on the hid
-  const hotelhid = params.hid
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { use } from "react";
+
+
+type Hotel = {
+  id: number
+  name: string
+  description: string
+  rating: number
+  address: string
+  amenities: string[]
+  images: string[]
+  rooms: {
+    id: number
+    type: string
+    description: string
+    price: number
+    size: number
+    capacity: number
+    amenities: string[]
+    available: boolean
+  }[]
+}
+
+type BookingStatus = {
+  success: boolean
+  message: string
+  bookingId?: string
+}
+
+export default function HotelPage({ params }: { params: Promise<{ hid: string }> }) {
+  const [hotel, setHotel] = useState<Hotel | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedRoom, setSelectedRoom] = useState<number | null>(null)
+  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>()
+  const [bookingStatus, setBookingStatus] = useState<BookingStatus | null>(null)
+  const { user } = useUser()
+  const { hid } = use(params);
+
+
+  //! API RECIEVE Fetch hotel data
+  useEffect(() => {
+    const fetchHotel = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/data/search/hotels/recieves/hotel-${hid}.json`)
+        if (!response.ok) throw new Error("Hotel not found")
+        const data = await response.json()
+        setHotel(data)
+      } catch (err) {
+        setError(`Failed to load hotel details: ${err instanceof Error ? err.message : String(err)}`)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchHotel()
+  }, [hid])
+
+  const handleBookNow = async (roomId: number) => {
+    if (!dateRange || !dateRange.from || !dateRange.to) {
+      setBookingStatus({
+        success: false,
+        message: "Please select check-in and check-out dates"
+      })
+      return
+    }
+
+    if (!user) {
+      setBookingStatus({
+        success: false,
+        message: "Please sign in to book a room"
+      })
+      return
+    }
+
+    setSelectedRoom(roomId)
+    setBookingStatus(null)
+
+    try {
+      setLoading(true)
+      
+      // Mock API request payload
+      const bookingData = {
+        userId: user.id,
+        hotelId: hid,
+        roomId,
+        startDate: dateRange.from,
+        endDate: dateRange.to,
+        guestCount: 1, // Default to 1, could be made configurable
+      }
+
+
+      // For demo, we'll simulate an API call with a timeout
+      const response = await simulateBookingApi(bookingData)
+
+      setBookingStatus({
+        success: response.success,
+        message: response.message,
+        bookingId: response.bookingId
+      })
+
+      // On success, we could refresh room availability
+      if (response.success && hotel) {
+        const updatedHotel = {
+          ...hotel,
+          rooms: hotel.rooms.map(room => 
+            room.id === roomId ? { ...room, available: false } : room
+          )
+        }
+        setHotel(updatedHotel)
+      }
+    } catch (err) {
+      setBookingStatus({
+        success: false,
+        message: "Booking failed. Please try again." + err
+      }
+      
+    )
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const calculateTotalPrice = (roomId: number) => {
+    if (!dateRange || !hotel) return 0
+    const room = hotel.rooms.find(r => r.id === roomId)
+    if (!room) return 0
+    
+    const nights = Math.ceil(
+      (dateRange.to!.getTime() - dateRange.from!.getTime()) / (1000 * 60 * 60 * 24)
+    )
+    return room.price * nights
+  }
+
+
+//   const bookRoom = async (bookingData: {
+//   userId: string;
+//   hotelId: string;
+//   roomId: number;
+//   startDate: Date;
+//   endDate: Date;
+//   guestCount: number;
+// }): Promise<{ success: boolean; bookingId?: string; message?: string }> => {
+//   //! This would be the actual API endpoint to book
+//   const response = await fetch('/api/bookings', {
+//     method: 'POST',
+//     headers: {
+//       'Content-Type': 'application/json',
+//     },
+//     body: JSON.stringify(bookingData),
+//   });
+//   return await response.json();
+// };
+
+
+
+
+  // Mock API simulation function
+  const simulateBookingApi = async (bookingData: {
+  userId: string;
+  hotelId: string;
+  roomId: number;
+  startDate: Date;
+  endDate: Date;
+  guestCount: number;
+}): Promise<{
+    success: boolean
+    message: string
+    bookingId?: string
+  }> => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        // Simulate 80% success rate for demo
+        const success = Math.random() > 0.2
+        
+        console.log(bookingData)
+        if (success) {
+          resolve({
+            success: true,
+            message: "Booking confirmed! Your reservation ID is BKG-" + Math.random().toString(36).substring(2, 10),
+            bookingId: "BKG-" + Math.random().toString(36).substring(2, 10)
+          })
+        } else {
+          resolve({
+            success: false,
+            message: "Room no longer available. Please select another room or dates."
+          })
+        }
+      }, 1000) // Simulate network delay
+    })
+  }
+
+  if (loading && !hotel) return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+  if (error) return <div className="min-h-screen flex items-center justify-center text-red-500">{error}</div>
+  if (!hotel) return <div className="min-h-screen flex items-center justify-center">Hotel not found</div>
 
   return (
-    <main className="min-h-screen">
-      <div className="bg-primary text-primary-foreground py-8">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div className="flex gap-2">
-              <h1 className="text-2xl md:text-3xl font-bold">Grand Hotel {hotelhid}</h1>
-              <div className="flex items-center gap-2 mt-1">
-                <div className="flex">
-                  {Array(4)
-                    .fill(0)
-                    .map((_, i) => (
-                      <StarIcon key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                </div>
-                <span className="text-sm">4-star hotel</span>
-                <span className="text-sm flex items-center">
-                  <MapPinIcon className="h-3.5 w-3.5 mr-1" />
-                  Downtown, New York
-                </span>
-              </div>
-            </div>
-
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid gap-8">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">{hotel.name}</h1>
+          <div className="flex items-center gap-1 mb-4">
+            {Array(Math.floor(hotel.rating)).fill(0).map((_, i) => (
+              <StarIcon key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
+            ))}
+            <span className="text-sm text-muted-foreground ml-1">
+              {hotel.rating.toFixed(1)}
+            </span>
           </div>
-        </div>
-      </div>
-
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-3">
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <div className="col-span-2 relative h-80 rounded-lg overflow-hidden">
+          <div className="flex items-center text-muted-foreground mb-6">
+            <MapPinIcon className="h-4 w-4 mr-1" />
+            {hotel.address}
+          </div>
+          
+          {/* Image gallery */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            {hotel.images.map((image, index) => (
+              <div key={index} className="relative h-64 rounded-lg overflow-hidden">
                 <Image
-                  src="/placeholder.svg?height=600&width=1200"
-                  alt="Hotel main image"
+                  src={image}
+                  alt={`${hotel.name} ${index + 1}`}
                   fill
                   className="object-cover"
                 />
               </div>
-              <div className="relative h-40 rounded-lg overflow-hidden">
-                <Image src="/placeholder.svg?height=300&width=400" alt="Hotel image" fill className="object-cover" />
+            ))}
+          </div>
+          
+          {/* Description */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="text-black">About This Hotel</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>{hotel.description}</p>
+            </CardContent>
+          </Card>
+          
+          {/* Amenities */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="text-black">Amenities</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {hotel.amenities.map(amenity => (
+                  <div key={amenity} className="flex items-center">
+                    {amenity === 'Wi-Fi' && <WifiIcon className="h-4 w-4 mr-2" />}
+                    {amenity === 'Breakfast' && <CoffeeIcon className="h-4 w-4 mr-2" />}
+                    {amenity}
+                  </div>
+                ))}
               </div>
-              <div className="relative h-40 rounded-lg overflow-hidden">
-                <Image src="/placeholder.svg?height=300&width=400" alt="Hotel image" fill className="object-cover" />
-              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Date Selection */}
+<Card className="mb-8">
+  <CardHeader>
+    <CardTitle className="text-black">Select Dates</CardTitle>
+  </CardHeader>
+  <CardContent>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <Label htmlFor="check-in">Check-in Date</Label>
+        <Input
+          id="check-in"
+          type="date"
+          value={dateRange?.from?.toISOString().split('T')[0] || ''}
+          onChange={(e) => {
+            const from = e.target.value ? new Date(e.target.value) : undefined
+            setDateRange(prev => ({
+              from,
+              to: prev?.to && from && prev.to < from ? undefined : prev?.to
+            }))
+          }}
+          min={new Date().toISOString().split('T')[0]} // Disable past dates
+          className="mt-1"
+        />
+      </div>
+      <div>
+        <Label htmlFor="check-out">Check-out Date</Label>
+        <Input
+          id="check-out"
+          type="date"
+          value={dateRange?.to?.toISOString().split('T')[0] || ''}
+          onChange={(e) => {
+            const to = e.target.value ? new Date(e.target.value) : undefined
+            setDateRange(prev => ({
+              from: prev?.from,
+              to
+            }))
+          }}
+          min={dateRange?.from?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0]}
+          className="mt-1"
+        />
+      </div>
+    </div>
+  </CardContent>
+</Card>
+          
+          {/* Booking Status */}
+          {bookingStatus && (
+            <div className={`p-4 rounded-md mb-6 ${
+              bookingStatus.success 
+                ? 'bg-green-100 text-green-800' 
+                : 'bg-red-100 text-red-800'
+            }`}>
+              {bookingStatus.message}
+              {bookingStatus.bookingId && (
+                <div className="mt-2 font-medium">
+                  Booking ID: {bookingStatus.bookingId}
+                </div>
+              )}
             </div>
-
-            <Tabs defaultValue="rooms" className="mb-8">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="rooms">Rooms</TabsTrigger>
-                <TabsTrigger value="amenities">Amenities</TabsTrigger>
-              </TabsList>
-              <TabsContent value="rooms" className="pt-6">
-                <h2 className="text-xl font-semibold mb-4">Available Rooms</h2>
-                <div className="space-y-6">
-                  {[
-                    { name: "Standard Room", price: 120, capacity: "2 guests", size: "25m²", bed: "1 Queen" },
-                    { name: "Deluxe Room", price: 180, capacity: "2 guests", size: "35m²", bed: "1 King" },
-                    { name: "Junior Suite", price: 250, capacity: "3 guests", size: "45m²", bed: "1 King + 1 Sofa" },
-                    { name: "Executive Suite", price: 350, capacity: "4 guests", size: "60m²", bed: "2 Queen" },
-                  ].map((room, index) => (
-                    <Card key={index}>
-                      <CardContent className="p-0">
-                        <div className="grid md:grid-cols-3 gap-4">
-                          <div className="relative h-48 md:h-full">
-                            <Image
-                              src={`/placeholder.svg?height=300&width=400`}
-                              alt={room.name}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                          <div className="p-4 md:col-span-2 flex flex-col">
-                            <div className="flex justify-between items-start">
-                              <div>
-                                <h3 className="font-semibold text-lg">{room.name}</h3>
-                                <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
-                                  <span className="flex items-center">
-                                    <BedDoubleIcon className="h-3.5 w-3.5 mr-1" />
-                                    {room.bed}
-                                  </span>
-                                  <span>{room.size}</span>
-                                  <span>{room.capacity}</span>
+          )}
+          
+          {/* Rooms */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-black">Available Rooms</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                {hotel.rooms.map(room => (
+                  <Card key={room.id} className="overflow-hidden">
+                    <CardContent className="p-0">
+                      <div className="grid md:grid-cols-3 gap-4">
+                        <div className="relative h-48 md:h-full">
+                          <Image
+                            src="/placeholder.svg"
+                            alt={room.type}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="p-4 md:col-span-2 flex flex-col">
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h3 className="font-semibold text-lg">{room.type} Room</h3>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                {room.size}m² • {room.capacity} {room.capacity > 1 ? 'people' : 'person'}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-xl font-bold">${room.price}</div>
+                              <div className="text-xs text-muted-foreground">per night</div>
+                              {dateRange && dateRange.from && dateRange.to && (
+                                <div className="text-sm mt-1">
+                                  Total: ${calculateTotalPrice(room.id)}
                                 </div>
-                              </div>
-                              <div className="text-right">
-                                <div className="text-sm text-muted-foreground">Price per night</div>
-                                <div className="text-xl font-bold">${room.price}</div>
-                              </div>
+                              )}
                             </div>
-
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              {["Free Wi-Fi", "Breakfast included", "Air conditioning", "TV"].map((amenity) => (
-                                <span key={amenity} className="flex items-center text-xs text-muted-foreground">
-                                  <CheckIcon className="h-3 w-3 mr-1" />
-                                  {amenity}
-                                </span>
-                              ))}
-                            </div>
-
-                            <p className="text-sm text-muted-foreground mt-3">
-                              Comfortable and well-appointed room with all essential amenities for a pleasant stay.
-                            </p>
-
-                            <div className="mt-auto pt-4 flex justify-between items-center">
-                              <div className="text-sm">
-                                <Badge variant="outline" className="text-green-600 border-green-600">
-                                  Available
-                                </Badge>
-                              </div>
-                              <Button>Book Now</Button>
-                            </div>
+                          </div>
+                          
+                          <p className="text-sm text-muted-foreground mt-2">{room.description}</p>
+                          
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            {room.amenities.map(amenity => (
+                              <span key={amenity} className="bg-muted px-2 py-0.5 rounded-full text-xs">
+                                {amenity}
+                              </span>
+                            ))}
+                          </div>
+                          
+                          <div className="mt-auto pt-4 flex justify-end">
+                            <Button 
+                              onClick={() => handleBookNow(room.id)}
+                              disabled={loading || !room.available || !dateRange}
+                            >
+                              {loading && selectedRoom === room.id ? (
+                                "Processing..."
+                              ) : room.available ? (
+                                "Book Now"
+                              ) : (
+                                "Booked"
+                              )}
+                            </Button>
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-              <TabsContent value="amenities" className="pt-6">
-                <h2 className="text-xl font-semibold mb-4">Hotel Amenities</h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-y-4">
-                  {[
-                    { icon: <WifiIcon className="h-4 w-4 mr-2" />, name: "Free Wi-Fi" },
-                    { icon: <CoffeeIcon className="h-4 w-4 mr-2" />, name: "Breakfast Available" },
-                    { icon: <BedDoubleIcon className="h-4 w-4 mr-2" />, name: "Room Service" },
-                    { icon: null, name: "Swimming Pool" },
-                    { icon: null, name: "Fitness Center" },
-                    { icon: null, name: "Business Center" },
-                    { icon: null, name: "Conference Rooms" },
-                    { icon: null, name: "Parking" },
-                    { icon: null, name: "Restaurant" },
-                    { icon: null, name: "Bar/Lounge" },
-                    { icon: null, name: "Concierge Service" },
-                    { icon: null, name: "Laundry Service" },
-                  ].map((amenity, index) => (
-                    <div key={index} className="flex items-center">
-                      {amenity.icon || <CheckIcon className="h-4 w-4 mr-2" />}
-                      <span>{amenity.name}</span>
-                    </div>
-                  ))}
-                </div>
-              </TabsContent>
-            </Tabs>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>About Grand Hotel {hotelhid}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  Located in the heart of downtown, Grand Hotel {hotelhid} offers luxurious accommodations with modern
-                  amenities and exceptional service. Our hotel features spacious rooms, a state-of-the-art fitness
-                  center, an indoor swimming pool, and multiple dining options.
-                </p>
-                <p className="text-muted-foreground mt-4">
-                  Whether you&apos;re traveling for business or leisure, our dedicated staff is committed to ensuring your
-                  stay is comfortable and memorable. The hotel is conveniently located near major attractions, shopping
-                  centers, and business districts.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-
-         
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
-    </main>
+    </div>
   )
 }
-

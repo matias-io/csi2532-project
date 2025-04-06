@@ -1,0 +1,43 @@
+{
+  "hotels": [
+    {
+      "id": 1,
+      "name": "Grand Hotel New York",
+      "chain": "Luxury Resorts International",
+      "rating": 4,
+      "location": "New York",
+      "price": 250,
+      "amenities": ["Wi-Fi", "Pool", "Gym", "Restaurant"],
+      "roomType": "Deluxe",
+      "capacity": 2,
+      "size": 35,
+      "image": "/hotel1.jpg"
+    },
+    {
+      "id": 2,
+      "name": "Urban Stay Downtown",
+      "chain": "Urban Stay Hotels",
+      "rating": 3,
+      "location": "Chicago",
+      "price": 180,
+      "amenities": ["Wi-Fi", "Breakfast", "Business Center"],
+      "roomType": "Standard",
+      "capacity": 2,
+      "size": 25,
+      "image": "/hotel2.jpg"
+    },
+    {
+      "id": 3,
+      "name": "Mountain View Resort",
+      "chain": "Mountain View Resorts",
+      "rating": 5,
+      "location": "Aspen",
+      "price": 400,
+      "amenities": ["Wi-Fi", "Spa", "Restaurant", "Pool"],
+      "roomType": "Suite",
+      "capacity": 4,
+      "size": 60,
+      "image": "/hotel3.jpg"
+    }
+  ]
+}
