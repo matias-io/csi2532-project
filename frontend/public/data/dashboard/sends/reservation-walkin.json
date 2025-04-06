@@ -1,0 +1,8 @@
+{
+  "roomId": "201",
+  "guestId": "GST-1001",
+  "checkInDate": "2025-04-06",
+  "checkOutDate": "2025-04-09",
+  "guests": 2,
+  "paymentMethod": "Credit Card"
+}

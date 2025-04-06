@@ -1,0 +1,11 @@
+{
+  "id": "GST-1001",
+  "guestName": "Sarah Williams",
+  "room": "201 - Deluxe",
+  "checkInDate": "2025-04-06",
+  "checkOutDate": "2025-04-09",
+  "nights": 3,
+  "guests": 2,
+  "total": 540.00,  
+  "status": "Pending"
+}

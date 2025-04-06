@@ -1,0 +1,14 @@
+{
+  "id": "10042",
+  "role": "employee",
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john.doe@hotelconnect.com",
+  "phone": "+1 (555) 123-4567",
+  "address": "123 Main St",
+  "city": "New York",
+  "zip": "10001",
+  "ssn": "XXX-XX-1234",
+  "hireDate": "2022-05-15",
+  "hotelId": "2"
+}

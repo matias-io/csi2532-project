@@ -1,0 +1,14 @@
+[
+  {
+    "id": "RES-1042",
+    "guestName": "Michael Johnson",
+    "room": "201 - Deluxe",
+    "time": "12:00 PM",
+    "nights": 3,
+    "status": "Pending",
+    "checkInDate": "2025-04-06",
+    "checkOutDate": "2025-04-09",
+    "guests": 2,
+    "total": 540.00
+  }
+]

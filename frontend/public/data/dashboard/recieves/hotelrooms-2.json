@@ -1,0 +1,18 @@
+[
+  {
+    "id": "101",
+    "type": "Standard",
+    "capacity": 2,
+    "size": 25,
+    "price": 120,
+    "status": "Available"
+  },
+  {
+    "id": "102",
+    "type": "Standard",
+    "capacity": 2,
+    "size": 25,
+    "price": 120,
+    "status": "Occupied"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "id": "2",
+  "name": "Grand Hotel New York",
+  "chain": "Luxury Resorts International",
+  "rating": "4 Stars",
+  "address": "123 Broadway",
+  "city": "New York",
+  "zip": "10001",
+  "phone": "+1 (212) 555-1234",
+  "email": "info@grandhotelny.com",
+  "totalRooms": 120,
+  "description": "Located in the heart of Manhattan...",
+  "amenities": [
+    "Free Wi-Fi",
+    "Swimming Pool",
+    "Fitness Center"
+  ]
+}
