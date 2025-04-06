@@ -1,0 +1,14 @@
+{
+  "destinations": [
+    {
+      "name": "New York",
+      "hotels": 24,
+      "image": "/images/nyc.jpg"
+    },
+    {
+      "name": "Toronto",
+      "hotels": 12,
+      "image": "/images/toronto.jpg"
+    }
+  ]
+}

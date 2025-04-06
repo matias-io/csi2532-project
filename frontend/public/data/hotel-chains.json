@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "name": "Luxury Resorts International",
+    "logo": "/placeholder.svg?height=80&width=200",
+    "hotels": 42,
+    "locations": 18,
+    "image": "/placeholder.svg?height=200&width=300",
+    "rating": 5
+  },
+  {
+    "id": 2,
+    "name": "Grand Hotels & Suites",
+    "logo": "/placeholder.svg?height=80&width=200",
+    "hotels": 38,
+    "locations": 15,
+    "image": "/placeholder.svg?height=200&width=300",
+    "rating": 4
+  },
+  {
+    "id": 3,
+    "name": "Comfort Inn Collection",
+    "logo": "/placeholder.svg?height=80&width=200",
+    "hotels": 56,
+    "locations": 22,
+    "image": "/placeholder.svg?height=200&width=300",
+    "rating": 3
+  },
+  {
+    "id": 4,
+    "name": "Urban Stay Hotels",
+    "logo": "/placeholder.svg?height=80&width=200",
+    "hotels": 29,
+    "locations": 14,
+    "image": "/placeholder.svg?height=200&width=300",
+    "rating": 4
+  },
+  {
+    "id": 5,
+    "name": "Mountain View Resorts",
+    "logo": "/placeholder.svg?height=80&width=200",
+    "hotels": 24,
+    "locations": 12,
+    "image": "/placeholder.svg?height=200&width=300",
+    "rating": 5
+  }
+]

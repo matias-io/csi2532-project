@@ -5,73 +5,53 @@ import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon, ChevronRightIcon, MapPinIcon, StarIcon } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 
-const hotelChains = [
-  {
-    id: 1,
-    name: "Luxury Resorts International",
-    logo: "/placeholder.svg?height=80&width=200",
-    hotels: 42,
-    locations: 18,
-    image: "/placeholder.svg?height=200&width=300",
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: "Grand Hotels & Suites",
-    logo: "/placeholder.svg?height=80&width=200",
-    hotels: 38,
-    locations: 15,
-    image: "/placeholder.svg?height=200&width=300",
-    rating: 4,
-  },
-  {
-    id: 3,
-    name: "Comfort Inn Collection",
-    logo: "/placeholder.svg?height=80&width=200",
-    hotels: 56,
-    locations: 22,
-    image: "/placeholder.svg?height=200&width=300",
-    rating: 3,
-  },
-  {
-    id: 4,
-    name: "Urban Stay Hotels",
-    logo: "/placeholder.svg?height=80&width=200",
-    hotels: 29,
-    locations: 14,
-    image: "/placeholder.svg?height=200&width=300",
-    rating: 4,
-  },
-  {
-    id: 5,
-    name: "Mountain View Resorts",
-    logo: "/placeholder.svg?height=80&width=200",
-    hotels: 24,
-    locations: 12,
-    image: "/placeholder.svg?height=200&width=300",
-    rating: 5,
-  },
-]
+interface HotelChain {
+  id: number
+  name: string
+  logo: string
+  hotels: number
+  locations: number
+  image: string
+  rating: number
+}
 
 export function HotelChainCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [, setScrollPosition] = useState(0)
+  const [hotelChains, setHotelChains] = useState<HotelChain[]>([])
+  const [loading, setLoading] = useState(true)
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
       const { scrollLeft, clientWidth } = scrollRef.current
-      const scrollTo = direction === "left" ? scrollLeft - clientWidth / 2 : scrollLeft + clientWidth / 2
+      const scrollTo =
+        direction === "left" ? scrollLeft - clientWidth / 2 : scrollLeft + clientWidth / 2
 
-      scrollRef.current.scrollTo({
-        left: scrollTo,
-        behavior: "smooth",
-      })
-
+      scrollRef.current.scrollTo({ left: scrollTo, behavior: "smooth" })
       setScrollPosition(scrollTo)
     }
   }
+
+  useEffect(() => {
+    const fetchHotelChains = async () => {
+      try {
+        const res = await fetch("/data/hotel-chains.json")
+        const data = await res.json()
+        setHotelChains(data)
+      } catch (err) {
+        console.error("Failed to fetch hotel chains:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchHotelChains()
+  }, [])
+
+  if (loading) return <p className="text-muted">Loading hotel chains...</p>
+  if (!hotelChains.length) return <p className="text-muted">No hotel chains found.</p>
 
   return (
     <div className="relative">
@@ -150,5 +130,3 @@ export function HotelChainCarousel() {
     </div>
   )
 }
-
-

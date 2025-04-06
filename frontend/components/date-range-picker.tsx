@@ -12,14 +12,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 interface DatePickerWithRangeProps {
   className?: string
+  value?: DateRange
+  onChange?: (range: DateRange | undefined) => void
 }
 
-export function DatePickerWithRange({ className }: DatePickerWithRangeProps) {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: new Date(new Date().setDate(new Date().getDate() + 7)),
-  })
-
+export function DatePickerWithRange({ className, value, onChange }: DatePickerWithRangeProps) {
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -27,16 +24,20 @@ export function DatePickerWithRange({ className }: DatePickerWithRangeProps) {
           <Button
             id="date"
             variant={"outline"}
-            className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground", className)}
+            className={cn(
+              "w-full justify-start text-left font-normal",
+              !value && "text-muted-foreground",
+              className
+            )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
-            {date?.from ? (
-              date.to ? (
+            {value?.from ? (
+              value.to ? (
                 <>
-                  {format(date.from, "LLL dd, y")} - {format(date.to, "LLL dd, y")}
+                  {format(value.from, "LLL dd, y")} - {format(value.to, "LLL dd, y")}
                 </>
               ) : (
-                format(date.from, "LLL dd, y")
+                format(value.from, "LLL dd, y")
               )
             ) : (
               <span>Pick a date range</span>
@@ -47,9 +48,9 @@ export function DatePickerWithRange({ className }: DatePickerWithRangeProps) {
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
+            defaultMonth={value?.from}
+            selected={value}
+            onSelect={onChange}
             numberOfMonths={2}
           />
         </PopoverContent>
@@ -57,4 +58,3 @@ export function DatePickerWithRange({ className }: DatePickerWithRangeProps) {
     </div>
   )
 }
-
