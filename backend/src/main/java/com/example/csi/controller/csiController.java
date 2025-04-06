@@ -67,6 +67,14 @@ public class csiController {
         }
     }
 
+
+    @GetMapping("/hotels/1")
+    
+    public ResponseEntity<?> hotelsID(@RequestParam String param) {
+        return new  ResponseEntity.status("skdjnsd");
+    }
+    
+
     @PostMapping("/post/{tableName}")
     public ResponseEntity<?> postToTable(@PathVariable String tableName, @RequestBody Object requestBody) {
         try {

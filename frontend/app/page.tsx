@@ -9,14 +9,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CalendarIcon, MapPinIcon, SearchIcon } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-// import { DatePickerWithRange } from "@/components/date-range-picker"
 import Footer from "@/components/Footer"
 import { HotelChainCarousel } from "@/components/hotel-chain-carousel"
-import {
-  SignedIn,
-  SignedOut,
-} from '@clerk/nextjs';
-
+import { SignedIn, SignedOut } from '@clerk/nextjs'
 
 type Destination = {
   name: string
@@ -31,7 +26,6 @@ type Reservation = {
 }
 
 export default function Home() {
-
   const [destinations, setDestinations] = useState<Destination[]>([])
   const [location, setLocation] = useState("")
   const [dateRange, setDateRange] = useState<{ from: Date | null; to: Date | null }>({ from: null, to: null })
@@ -39,18 +33,50 @@ export default function Home() {
   const [reservations, setReservations] = useState<Reservation[]>([])
 
   useEffect(() => {
-
-
-    fetch("/data/popular-destinations.json")
+    fetch("https://test-deployment-iq7z.onrender.com/get/destinations")
       .then(res => res.json())
-      .then(data => setDestinations(data.destinations))
+      .then((data: { destinations: Destination[] }) => {
+        if (data?.destinations?.length) {
+          const includesMontreal = data.destinations.some(dest => dest.name === "Montreal")
+          const allDestinations = includesMontreal
+            ? data.destinations
+            : [...data.destinations, {
+              name: "Montreal",
+              hotels: 21,
+              image: "https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/hotel-images/destinations/YUL.jpg"
+            }]
+          setDestinations(allDestinations)
+        } else {
+          throw new Error("No destinations")
+        }
+      })
+      .catch(() => {
+        setDestinations([
+          {
+            name: "New York City",
+            hotels: 45,
+            image: "https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/hotel-images/destinations/JFK.jpg"
+          },
+          {
+            name: "Toronto",
+            hotels: 32,
+            image: "https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/hotel-images/destinations/YYZ.jpg"
+          },
+          {
+            name: "Montreal",
+            hotels: 21,
+            image: "https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/hotel-images/destinations/YUL.jpg"
+          }
+        ])
+      })
   }, [])
 
   useEffect(() => {
     if (viewingReservations) {
-      fetch("/data/user-reservations.json") 
+      fetch("/api/user/reservations") // replace with your actual backend route
         .then(res => res.json())
-        .then(data => setReservations(data.reservations))
+        .then((data: { reservations: Reservation[] }) => setReservations(data.reservations))
+        .catch(() => console.error("Failed to load reservations"))
     }
   }, [viewingReservations])
 
@@ -66,6 +92,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col">
+      {/* Search Section */}
       <section className="bg-primary text-primary-foreground pb-8 pt-2">
         <div className="container mx-auto px-4">
           <Card className="bg-white/5 border-white/10">
@@ -98,7 +125,6 @@ export default function Home() {
                       </div>
                     </div>
 
-
                     <div className="md:col-span-2">
                       <Label htmlFor="dates" className="text-primary-foreground">Dates</Label>
                       <div className="grid grid-cols-2 gap-2 mt-1">
@@ -110,10 +136,7 @@ export default function Home() {
                             min={new Date().toISOString().split('T')[0]}
                             onChange={(e) => {
                               const from = e.target.value ? new Date(e.target.value) : null
-                              setDateRange(prev => ({
-                                from,
-                                to: prev?.to || null
-                              }))
+                              setDateRange(prev => ({ from, to: prev.to }))
                             }}
                             className="bg-white/10 border-white/20 text-primary-foreground"
                           />
@@ -123,21 +146,16 @@ export default function Home() {
                           <Input
                             id="check-out"
                             type="date"
-                            min={dateRange?.from?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0]}
+                            min={dateRange.from ? dateRange.from.toISOString().split('T')[0] : new Date().toISOString().split('T')[0]}
                             onChange={(e) => {
                               const to = e.target.value ? new Date(e.target.value) : null
-                              setDateRange(prev => ({
-                                from: prev?.from || null,
-                                to
-                              }))
+                              setDateRange(prev => ({ from: prev.from, to }))
                             }}
                             className="bg-white/10 border-white/20 text-primary-foreground"
                           />
                         </div>
                       </div>
                     </div>
-
-
                   </div>
                   <div className="mt-4 flex justify-end">
                     <Button className="w-full md:w-auto" onClick={handleSearch}>
@@ -147,29 +165,24 @@ export default function Home() {
                 </TabsContent>
 
                 <TabsContent value="reservations">
-
-
-
                   <div className="flex flex-col items-center justify-center py-8 text-center">
+                    <SignedOut>
+                      <CalendarIcon className="h-10 w-10 mb-2 opacity-80 color-white" />
+                      <h3 className="text-lg font-medium text-white">View Your Reservations</h3>
+                      <p className="text-sm text-primary-foreground/70 mt-1 mb-4">
+                        Login to see your upcoming and past bookings
+                      </p>
+                    </SignedOut>
 
-            <SignedOut>
-                    <CalendarIcon className="h-10 w-10 mb-2 opacity-80 color-white" />
-                    <h3 className="text-lg font-medium text-white">View Your Reservations</h3>
-                    <p className="text-sm text-primary-foreground/70 mt-1 mb-4">
-                      Login to see your upcoming and past bookings
-                    </p>
-            </SignedOut>
-
-
-            <SignedIn>
-                    <ul className="text-white text-left max-w-md">
-                      {reservations.map(res => (
-                        <li key={res.id}>
-                          <strong>{res.hotelName}</strong> – {res.dateRange.start} to {res.dateRange.end}
-                        </li>
-                      ))}
-                    </ul>
-            </SignedIn> 
+                    <SignedIn>
+                      <ul className="text-white text-left max-w-md">
+                        {reservations.map(res => (
+                          <li key={res.id}>
+                            <strong>{res.hotelName}</strong> – {res.dateRange.start} to {res.dateRange.end}
+                          </li>
+                        ))}
+                      </ul>
+                    </SignedIn>
                   </div>
                 </TabsContent>
               </Tabs>
@@ -178,17 +191,23 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Featured Hotel Chains */}
       <section className="py-12 container mx-auto px-4">
         <h2 className="text-2xl font-bold mb-6">Featured Hotel Chains</h2>
         <HotelChainCarousel />
       </section>
 
+      {/* Popular Destinations */}
       <section className="py-12 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl font-bold mb-6">Popular Destinations</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {destinations.map((destination, index) => (
-              <Link href={`/search?location=${encodeURIComponent(destination.name)}`} key={index} className="group">
+            {destinations.map((destination) => (
+              <Link
+                href={`/search?location=${encodeURIComponent(destination.name)}`}
+                key={destination.name}
+                className="group"
+              >
                 <Card className="overflow-hidden border-0 shadow-md transition-all group-hover:shadow-lg">
                   <div className="relative h-48">
                     <Image
