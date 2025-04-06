@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -5,9 +6,20 @@ import { Badge } from "@/components/ui/badge"
 import { BedDoubleIcon, CheckIcon, CoffeeIcon, MapPinIcon, StarIcon, WifiIcon } from "lucide-react"
 import Image from "next/image"
 
-export default function HotelDetailPage({ params }: { params: { hid: string } }) {
+import { useSearchParams } from 'next/navigation'
+
+
+export default function HotelDetailPage() {
   // This would normally fetch hotel data based on the hid
-  const hotelhid = params.hid
+  const searchParams = useSearchParams()
+  
+  if(!searchParams?.has('hid')) {
+    return <div>No hotel selected</div>
+  } else {
+    const hotelhid = searchParams.get('hid')
+
+
+ 
 
   return (
     <main className="min-h-screen">
@@ -180,3 +192,4 @@ export default function HotelDetailPage({ params }: { params: { hid: string } })
   )
 }
 
+}
