@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CalendarIcon, MapPinIcon, SearchIcon } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-import { DatePickerWithRange } from "@/components/date-range-picker"
+// import { DatePickerWithRange } from "@/components/date-range-picker"
 import Footer from "@/components/Footer"
 import { HotelChainCarousel } from "@/components/hotel-chain-carousel"
 import {
@@ -34,7 +34,7 @@ export default function Home() {
 
   const [destinations, setDestinations] = useState<Destination[]>([])
   const [location, setLocation] = useState("")
-  const [dateRange, setDateRange] = useState<{ from: Date; to: Date } | null>(null)
+  const [dateRange, setDateRange] = useState<{ from: Date | null; to: Date | null }>({ from: null, to: null })
   const [viewingReservations, setViewingReservations] = useState(false)
   const [reservations, setReservations] = useState<Reservation[]>([])
 
@@ -57,7 +57,7 @@ export default function Home() {
   const handleSearch = () => {
     const params = new URLSearchParams()
     if (location) params.append("location", location)
-    if (dateRange) {
+    if (dateRange.from && dateRange.to) {
       params.append("from", dateRange.from.toISOString())
       params.append("to", dateRange.to.toISOString())
     }
@@ -97,12 +97,47 @@ export default function Home() {
                         />
                       </div>
                     </div>
+
+
                     <div className="md:col-span-2">
                       <Label htmlFor="dates" className="text-primary-foreground">Dates</Label>
-                      <div className="mt-1">
-                        <DatePickerWithRange className="bg-white/10 border-white/20" onChange={(range) => setDateRange(range && range.from && range.to ? { from: range.from, to: range.to } : null)} />
+                      <div className="grid grid-cols-2 gap-2 mt-1">
+                        <div>
+                          <Label htmlFor="check-in" className="text-xs">Check-in</Label>
+                          <Input
+                            id="check-in"
+                            type="date"
+                            min={new Date().toISOString().split('T')[0]}
+                            onChange={(e) => {
+                              const from = e.target.value ? new Date(e.target.value) : null
+                              setDateRange(prev => ({
+                                from,
+                                to: prev?.to || null
+                              }))
+                            }}
+                            className="bg-white/10 border-white/20 text-primary-foreground"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="check-out" className="text-xs">Check-out</Label>
+                          <Input
+                            id="check-out"
+                            type="date"
+                            min={dateRange?.from?.toISOString().split('T')[0] || new Date().toISOString().split('T')[0]}
+                            onChange={(e) => {
+                              const to = e.target.value ? new Date(e.target.value) : null
+                              setDateRange(prev => ({
+                                from: prev?.from || null,
+                                to
+                              }))
+                            }}
+                            className="bg-white/10 border-white/20 text-primary-foreground"
+                          />
+                        </div>
                       </div>
                     </div>
+
+
                   </div>
                   <div className="mt-4 flex justify-end">
                     <Button className="w-full md:w-auto" onClick={handleSearch}>
