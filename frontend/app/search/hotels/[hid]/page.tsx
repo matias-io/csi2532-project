@@ -8,11 +8,11 @@ import Image from "next/image"
 
 // import { useSearchParams } from 'next/navigation'
 // import { useRouter } from 'next/router'
+import { use } from 'react'
 
-
-export default function HotelDetailPage( { params }: { params: { hid: string } }) {
+export default function HotelDetailPage( { params }: { params: Promise<{ hid: string }> }) {
   
-  const { hid } = params
+  const { hid } = use(params);
   const hotelhid = hid || '1' // Default to '1' if no hid is provided
   // const router = useRouter()
   // const { hotelhid } = router.query
