@@ -1,5 +1,6 @@
 package com.example.csi.controller;
 
+import com.example.csi.annotation.ApiDescription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -47,9 +48,7 @@ public class CustomErrorController implements ErrorController {
         }
         
         HttpStatus status = getStatus(request);
-        
         String timestamp = LocalDateTime.now().format(dateFormatter);
-        
         Map<String, Object> errorDetails = getErrorAttributes(request);
         String errorMessage = (String) errorDetails.getOrDefault("message", "Unknown error");
         String path = (String) errorDetails.getOrDefault("path", request.getRequestURI());
@@ -169,9 +168,9 @@ public class CustomErrorController implements ErrorController {
         
         for (Map.Entry<RequestMappingInfo, HandlerMethod> entry : map.entrySet()) {
             RequestMappingInfo info = entry.getKey();
+            HandlerMethod handlerMethod = entry.getValue();
             
             Set<RequestMethod> methods = info.getMethodsCondition().getMethods();
-            
             if (methods.isEmpty()) {
                 methods = Set.of(RequestMethod.GET);
             }
@@ -188,18 +187,24 @@ public class CustomErrorController implements ErrorController {
             }
             
             for (RequestMethod method : methods) {
-                if (!methodGroups.containsKey(method)) {
-                    methodGroups.put(method, new ArrayList<>());
-                }
-                
+                methodGroups.putIfAbsent(method, new ArrayList<>());
+
                 for (String pattern : patterns) {
                     String key = method + " " + pattern;
                     String mappingTimestamp = mappingTimestamps.getOrDefault(key, "Unknown");
+                    String handler = handlerMethod.getMethod().getDeclaringClass().getSimpleName() + "." + handlerMethod.getMethod().getName();
+                    
+                    // Retrieve the custom documentation if available
+                    String description = "";
+                    if (handlerMethod.getMethod().isAnnotationPresent(ApiDescription.class)) {
+                        description = handlerMethod.getMethod().getAnnotation(ApiDescription.class).value();
+                    }
                     
                     Map<String, String> mapping = new HashMap<>();
                     mapping.put("path", pattern);
-                    mapping.put("handler", entry.getValue().getMethod().getDeclaringClass().getSimpleName() + "." + entry.getValue().getMethod().getName());
+                    mapping.put("handler", handler);
                     mapping.put("timestamp", mappingTimestamp);
+                    mapping.put("description", description);
                     methodGroups.get(method).add(mapping);
                 }
             }
@@ -210,18 +215,25 @@ public class CustomErrorController implements ErrorController {
         }
         
         StringBuilder html = new StringBuilder();
-        
         for (Map.Entry<RequestMethod, List<Map<String, String>>> entry : methodGroups.entrySet()) {
             html.append("<div class=\"method-group\">\n");
             html.append("    <h3><span class=\"method-name\">").append(entry.getKey()).append("</span></h3>\n");
             html.append("    <ul>\n");
             
             for (Map<String, String> mapping : entry.getValue()) {
+                String title = "Handler: " + mapping.get("handler") +
+                               " | Registered: " + mapping.get("timestamp");
+                if (!mapping.get("description").isEmpty()) {
+                    title += " | Description: " + mapping.get("description");
+                }
+                
                 html.append("        <li>\n");
                 html.append("            <div class=\"mapping-info\">\n");
-                html.append("                <div class=\"mapping-path\"><strong>").append(mapping.get("path")).append("</strong></div>\n");
+                html.append("                <div class=\"mapping-path\" title=\"").append(title).append("\">")
+                    .append("<strong>").append(mapping.get("path")).append("</strong></div>\n");
                 html.append("                <div class=\"mapping-handler\">").append(mapping.get("handler")).append("</div>\n");
-                html.append("                <div class=\"mapping-timestamp\"><span class=\"timestamp\">").append(mapping.get("timestamp")).append("</span></div>\n");
+                html.append("                <div class=\"mapping-timestamp\"><span class=\"timestamp\">")
+                    .append(mapping.get("timestamp")).append("</span></div>\n");
                 html.append("            </div>\n");
                 html.append("        </li>\n");
             }

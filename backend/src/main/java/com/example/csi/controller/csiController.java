@@ -5,6 +5,9 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
+
+import com.example.csi.annotation.ApiDescription;
+
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +37,7 @@ public class csiController {
     }
 
     @GetMapping("/test")
+    @ApiDescription("Returns a greeting message to the user.")
     public ResponseEntity<String> getHello() {
         return ResponseEntity.ok("Hello, World!  <br> You are in the CSIController Subpages :)");
     }
