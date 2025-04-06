@@ -70,18 +70,31 @@ public class metadataController {
     @GetMapping("/columns/{tableName}")
     public ResponseEntity<?> getTableColumns(@PathVariable String tableName) {
         try {
-            String url = supabaseUrl + "/rest/v1/" + tableName + "?select=*";
+            String url = supabaseUrl + "/rest/v1/rpc/get_columns";
+    
+            Map<String, String> requestBody = new HashMap<>();
+            requestBody.put("table_name", tableName);
 
             HttpHeaders headers = createHeaders();
-            HttpEntity<Void> entity = new HttpEntity<>(headers);
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            
+            headers.setContentType(MediaType.APPLICATION_JSON);
+    
+
+            HttpEntity<Map<String, String>> entity = new HttpEntity<>(requestBody, headers);
+    
+    
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+    
+
             if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            
                 ObjectMapper mapper = new ObjectMapper();
                 List<Map<String, Object>> records = mapper.readValue(response.getBody(), new TypeReference<>() {});
                 
                 if (!records.isEmpty()) {
-                    Set<String> columnNames = records.get(0).keySet();
+                    Set<String> columnNames = new HashSet<>();
+                    for (Map<String, Object> record : records) {
+                        columnNames.add((String) record.get("column_name"));
+                    }
                     return ResponseEntity.ok(columnNames);
                 }
             }
@@ -90,7 +103,7 @@ public class metadataController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
         }
     }
-
+    
     // Get Primary Keys for a Table
     @GetMapping("/primaryKey/{tableName}")
     public ResponseEntity<?> getPrimaryKey(@PathVariable String tableName) {

@@ -1,164 +1,118 @@
-package com.example.csi.dummyDataGenerator;
+// package com.example.csi.dummyDataGenerator;
+// import java.io.OutputStream;
+// import java.net.HttpURLConnection;
+// import java.net.URL;
+// import java.util.*;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+// import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class DummyDataGenerator {
+// public class DummyDataGenerator {
+//     private static final String BASE_URL = "https://test-deployment-iq7z.onrender.com/post/";
+//     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static final Random random = new Random();
-    private static final HttpClient client = HttpClient.newHttpClient();
+//     public static void main(String[] args) throws Exception {
+//         postToEndpoint("HotelChain", generateHotelChain());
+//         postToEndpoint("Hotel", generateHotel());
+//         postToEndpoint("Room", generateRoom());
+//         postToEndpoint("Guest", generateGuest());
+//         postToEndpoint("Employee", generateEmployee());
+//         postToEndpoint("Reservation", generateReservation());
+//         postToEndpoint("Rental", generateRental());
+//         postToEndpoint("Archive", generateArchive());
+//     }
 
-    private static void sendPostRequest(String url, String json) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("POST " + url + " => " + response.statusCode());
-            System.out.println(response.body());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//     private static void postToEndpoint(String table, Map<String, Object> data) throws Exception {
+//         String url = BASE_URL + table;
+//         String jsonInputString = objectMapper.writeValueAsString(data);
 
-    private static String randomPhone() {
-        return "613-" + (1000 + random.nextInt(9000));
-    }
+//         HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
+//         con.setRequestMethod("POST");
+//         con.setRequestProperty("Content-Type", "application/json; utf-8");
+//         con.setDoOutput(true);
 
-    private static String randomEmail(String name) {
-        return name.toLowerCase().replace(" ", ".") + "@mail.com";
-    }
+//         try (OutputStream os = con.getOutputStream()) {
+//             os.write(jsonInputString.getBytes());
+//             os.flush();
+//         }
 
-    private static String randomDate() {
-        LocalDate start = LocalDate.of(2023, 1, 1);
-        return start.plusDays(random.nextInt(365)).toString();
-    }
+//         System.out.println("POST to " + url + " -> Status: " + con.getResponseCode());
+//         con.disconnect();
+//     }
 
-    private static void createChains() {
-        for (int i = 0; i < 3; i++) {
-            String name = "Chain " + (i + 1);
-            int bureauId = i + 1; // Adjust to ensure bureauId exists in main_hotel
-            String json = String.format("{\"email\": \"%s\", \"telephone\": \"%s\", \"nom\": \"%s\", \"nombre_hotels\": %d, \"bureau_id\": %d}",
-                    randomEmail(name), randomPhone(), name, random.nextInt(5) + 1, bureauId);
-            sendPostRequest("https://test-deployment-iq7z.onrender.com/post/chain", json);
-        }
-    }
-    
+//     private static Map<String, Object> generateHotelChain() {
+//         Map<String, Object> data = new HashMap<>();
+//         data.put("central_office_address", "123 King St, Toronto");
+//         data.put("num_hotels", 5);
+//         data.put("contact_email", "info@chainexample.com");
+//         data.put("contact_number", "123-456-7890");
+//         return data;
+//     }
 
-    public static List<Integer> createHotels(List<Integer> chainIds) {
-        List<Integer> hotelIds = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            int chainId = chainIds.get(random.nextInt(chainIds.size()));
-            String json = String.format("{\"chain_id\": %d, \"adresse\": \"Hotel Addr %d\", \"nombre_chambres\": %d, \"email\": \"%s\", \"telephone\": \"%s\", \"etoile\": %d}",
-                    chainId, i + 1, 10 + random.nextInt(50), randomEmail("hotel" + i), randomPhone(), 1 + random.nextInt(5));
-            String response = sendPostRequestAndGetResponse("https://test-deployment-iq7z.onrender.com/post/hotel", json);
-            int hotelId = parseHotelIdFromResponse(response);
-            hotelIds.add(hotelId);
-        }
-        return hotelIds;
-    }
+//     private static Map<String, Object> generateHotel() {
+//         Map<String, Object> data = new HashMap<>();
+//         data.put("rating", 4);
+//         data.put("num_rooms", 100);
+//         data.put("address", "456 Queen St, Ottawa");
+//         data.put("contact_email", "hotel@chainexample.com");
+//         data.put("contact_number", "987-654-3210");
+//         return data;
+//     }
 
-    public static void createRooms(List<Integer> hotelIds) {
-        for (int i = 0; i < 10; i++) {
-            int hotelId = hotelIds.get(random.nextInt(hotelIds.size()));
-            String[] views = {"mer", "montagne", "aucune"};
-            String json = String.format("{\"numero_chambre\": %d, \"hotel_id\": %d, \"capacite\": \"%d\", \"prix\": %.2f, \"vue\": \"%s\", \"etendu\": %b, \"commodites\": \"WiFi,TV\", \"problemes\": \"None\"}",
-                    100 + i, hotelId, 1 + random.nextInt(4), 50 + random.nextDouble() * 100, views[random.nextInt(3)], random.nextBoolean());
-            sendPostRequest("https://test-deployment-iq7z.onrender.com/post/room", json);
-        }
-    }
+//     private static Map<String, Object> generateRoom() {
+//         Map<String, Object> data = new HashMap<>();
 
-    public static void createClients() {
-        for (int i = 0; i < 10; i++) {
-            String name = "Client " + i;
-            String json = String.format("{\"full_name\": \"%s\", \"address\": \"Client St %d\", \"social_security_number\": \"%d\", \"date_registration\": \"%s\"}",
-                    name, i + 10, 1000 + i, randomDate());
-            sendPostRequest("https://test-deployment-iq7z.onrender.com/post/client", json);
-        }
-    }
+//         data.put("price", 129.99);
+//         data.put("amenities", "WiFi,TV,AC");
+//         data.put("capacity", 2);
+//         data.put("view", "City");
+//         data.put("issues", null);
+//         data.put("extendable", true);
+//         return data;
+//     }
 
-    public static void createReservations() {
-        for (int i = 0; i < 5; i++) {
-            String startDate = randomDate();
-            String endDate = LocalDate.parse(startDate).plusDays(random.nextInt(5) + 1).toString();
-            String json = String.format("{\"client_id\": %d, \"hotel_id\": %d, \"numero_chambre\": %d, \"date_debut\": \"%s\", \"date_fin\": \"%s\"}",
-                    1 + random.nextInt(10), 1 + random.nextInt(5), 100 + random.nextInt(10), startDate, endDate);
-            sendPostRequest("https://test-deployment-iq7z.onrender.com/post/reservation", json);
-        }
-    }
+//     private static Map<String, Object> generateGuest() {
+//         Map<String, Object> data = new HashMap<>();
+//         data.put("full_name", "Jane Doe");
+//         data.put("address", "789 River Rd, Montreal");
+//         data.put("sin", "123456789");
+//         data.put("checkin_date", "2025-04-10");
+//         return data;
+//     }
 
-    public static void createEmployees() {
-        for (int i = 0; i < 5; i++) {
-            String name = "Emp " + i;
-            String json = String.format("{\"hotel_id\": %d, \"nom\": \"%s\", \"adresse\": \"Employee St %d\", \"nas\": \"%d\", \"role\": \"Receptionist\"}",
-                    1 + random.nextInt(5), name, i + 1, 10000 + i);
-            sendPostRequest("https://test-deployment-iq7z.onrender.com/post/employee", json);
-        }
-    }
+//     private static Map<String, Object> generateEmployee() {
+//         Map<String, Object> data = new HashMap<>();
+//         data.put("full_name", "John Smith");
+//         data.put("address", "1010 Maple Ave, Toronto");
+//         data.put("sin", "987654321");
+//         data.put("role", "Manager");
+//         return data;
+//     }
 
-    public static void createLocations() {
-        for (int i = 0; i < 5; i++) {
-            String start = randomDate();
-            String end = LocalDate.parse(start).plusDays(random.nextInt(3) + 1).toString();
-            String json = String.format("{\"client_id\": %d, \"hotel_id\": %d, \"numero_chambre\": %d, \"employe_id\": %d, \"date_debut\": \"%s\", \"date_fin\": \"%s\"}",
-                    1 + random.nextInt(10), 1 + random.nextInt(5), 100 + random.nextInt(10), 1 + random.nextInt(5), start, end);
-            sendPostRequest("https://test-deployment-iq7z.onrender.com/post/location", json);
-        }
-    }
+//     private static Map<String, Object> generateReservation() {
+//         Map<String, Object> data = new HashMap<>();
+//         data.put("guest_id", 1);
+//         data.put("room_id", 1);
+//         data.put("checkin_date", "2025-04-12");
+//         data.put("checkout_date", "2025-04-15");
+//         data.put("status", "Confirmed");
+//         return data;
+//     }
 
-    public static void createArchives() {
-        for (int i = 1; i <= 5; i++) {
-            String json = String.format("{\"location_id\": %d, \"nombre_reservation\": %d, \"nombre_location\": %d}", i, random.nextInt(3), random.nextInt(3));
-            sendPostRequest("https://test-deployment-iq7z.onrender.com/post/archive", json);
-        }
-    }
+//     private static Map<String, Object> generateRental() {
+//         Map<String, Object> data = new HashMap<>();
+//         data.put("reservation_id", 1);
+//         data.put("guest_id", 1);
+//         data.put("room_id", 1);
+//         data.put("checkin_date", "2025-04-12");
+//         data.put("checkout_date", "2025-04-15");
+//         data.put("employee_id", 1);
+//         return data;
+//     }
 
-    // Utility method to send POST requests and return the response
-    private static String sendPostRequestAndGetResponse(String url, String json) {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            return response.body();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
-    // Parse chain_id from the response
-    private static int parseChainIdFromResponse(String response) {
-        // Assuming the response contains a "chain_id" field
-        // Parse the ID from the response here
-        return Integer.parseInt(response); // Modify as per actual response format
-    }
-
-    // Parse hotel_id from the response
-    private static int parseHotelIdFromResponse(String response) {
-        // Assuming the response contains a "hotel_id" field
-        // Parse the ID from the response here
-        return Integer.parseInt(response); // Modify as per actual response format
-    }
-
-    public static void main(String[] args) {
-        chainIds = createChains();
-        List<Integer> hotelIds = createHotels(chainIds);
-        createRooms(hotelIds);
-        createClients();
-        createEmployees();
-        createReservations();
-        createLocations();
-        createArchives();
-    }
-}
+//     private static Map<String, Object> generateArchive() {
+//         Map<String, Object> data = new HashMap<>();
+//         data.put("reservation_id", 1);
+//         data.put("rental_id", 1);
+//         return data;
+//     }
+// }

@@ -8,7 +8,7 @@ import Link from "next/link"
 import { useState, useRef, useEffect } from "react"
 
 interface HotelChain {
-  id: number
+  chain_id: number
   name: string
   logo: string
   hotels: number
@@ -37,11 +37,25 @@ export function HotelChainCarousel() {
   useEffect(() => {
     const fetchHotelChains = async () => {
       try {
-        const res = await fetch("/data/hotel-chains.json")
-        const data = await res.json()
-        setHotelChains(data)
-      } catch (err) {
-        console.error("Failed to fetch hotel chains:", err)
+        const response = await fetch("https://test-deployment-iq7z.onrender.com/get/hotelchain")
+        const data = await response.json()
+        
+// https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/hotel-images/hotel-chain/bedroom.jpg
+
+
+        const formattedChains = data.map((chain: any) => ({
+          chain_id: chain.chain_id, // Using chain_id from API response
+          name: chain.name,
+          logo: `https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/logo/${chain.logo_url}`,
+          hotels: chain.number_of_hotels,
+          locations: chain.number_of_locations, // Update this if the correct field is different
+          image: `https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/hotel-images/hotel-chain/${chain.hotel_chain_images_url}.jpg`, // Placeholder image
+          rating: chain.hotel_chain_classification, // Assuming classification corresponds to rating
+        }));
+        
+        setHotelChains(formattedChains)
+      } catch (error) {
+        console.error('Error fetching data:', error)
       } finally {
         setLoading(false)
       }
@@ -62,7 +76,7 @@ export function HotelChainCarousel() {
       >
         {hotelChains.map((chain) => (
           <Card
-            key={chain.id}
+            key={chain.chain_id} // Use chain_id as the unique key
             className="min-w-[300px] max-w-[300px] border shadow-sm hover:shadow-md transition-shadow"
           >
             <CardContent className="p-0">
@@ -102,7 +116,7 @@ export function HotelChainCarousel() {
                   <div>{chain.hotels} hotels</div>
                 </div>
                 <Button asChild className="w-full">
-                  <Link href={`/chains/${chain.id}`}>View Hotels</Link>
+                  <Link href={`/chains/${chain.chain_id}`}>View Hotels</Link>
                 </Button>
               </div>
             </CardContent>

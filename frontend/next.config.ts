@@ -1,7 +1,10 @@
-import type { NextConfig } from "next";
+// next.config.ts
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    domains: ['eircgcvplkpzypudsajc.supabase.co'], // Add your Supabase domain here
+  },
 };
 
 export default nextConfig;
