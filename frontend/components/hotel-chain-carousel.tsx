@@ -16,7 +16,15 @@ interface HotelChain {
   image: string
   rating: number
 }
-
+interface APIHotelChain {
+  chain_id: number
+  name: string
+  logo_url: string
+  number_of_hotels: number
+  number_of_locations: number
+  hotel_chain_images_url: string
+  hotel_chain_classification: number
+}
 export function HotelChainCarousel() {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [, setScrollPosition] = useState(0)
@@ -43,7 +51,7 @@ export function HotelChainCarousel() {
 // https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/hotel-images/hotel-chain/bedroom.jpg
 
 
-        const formattedChains = data.map((chain: any) => ({
+        const formattedChains = data.map((chain: APIHotelChain) => ({
           chain_id: chain.chain_id, // Using chain_id from API response
           name: chain.name,
           logo: `https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/logo/${chain.logo_url}`,
