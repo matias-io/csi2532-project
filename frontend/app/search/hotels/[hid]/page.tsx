@@ -12,6 +12,7 @@ import { useEffect } from "react"
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { use } from "react";
 
 
 type Hotel = {
@@ -40,7 +41,7 @@ type BookingStatus = {
   bookingId?: string
 }
 
-export default function HotelPage({ params }: { params: { hid: string } }) {
+export default function HotelPage({ params }: { params: Promise<{ hid: string }> }) {
   const [hotel, setHotel] = useState<Hotel | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -48,13 +49,15 @@ export default function HotelPage({ params }: { params: { hid: string } }) {
   const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>()
   const [bookingStatus, setBookingStatus] = useState<BookingStatus | null>(null)
   const { user } = useUser()
+  const { hid } = use(params);
+
 
   //! API RECIEVE Fetch hotel data
   useEffect(() => {
     const fetchHotel = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/data/search/hotels/recieves/hotel-${params.hid}.json`)
+        const response = await fetch(`/data/search/hotels/recieves/hotel-${hid}.json`)
         if (!response.ok) throw new Error("Hotel not found")
         const data = await response.json()
         setHotel(data)
@@ -66,7 +69,7 @@ export default function HotelPage({ params }: { params: { hid: string } }) {
     }
 
     fetchHotel()
-  }, [params.hid])
+  }, [hid])
 
   const handleBookNow = async (roomId: number) => {
     if (!dateRange || !dateRange.from || !dateRange.to) {
@@ -94,7 +97,7 @@ export default function HotelPage({ params }: { params: { hid: string } }) {
       // Mock API request payload
       const bookingData = {
         userId: user.id,
-        hotelId: params.hid,
+        hotelId: hid,
         roomId,
         startDate: dateRange.from,
         endDate: dateRange.to,
