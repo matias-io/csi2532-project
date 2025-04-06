@@ -1,0 +1,121 @@
+{
+  "hotels": [
+    {
+      "id": 1,
+      "name": "Grand Hotel New York",
+      "chain": "Luxury Resorts International",
+      "rating": 4,
+      "address": "123 Broadway, New York, NY",
+      "location": "New York",
+      "priceRange": [200, 500],
+      "amenities": ["Wi-Fi", "Pool", "Gym", "Restaurant"],
+      "roomTypes": [
+        {
+          "id": 101,
+          "type": "Standard",
+          "price": 200,
+          "capacity": 2,
+          "size": 25,
+          "available": true
+        },
+        {
+          "id": 102,
+          "type": "Deluxe",
+          "price": 350,
+          "capacity": 2,
+          "size": 35,
+          "available": true
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Urban Stay Downtown",
+      "chain": "Urban Stay Hotels",
+      "rating": 3,
+      "address": "456 Main St, Chicago, IL",
+      "location": "Chicago",
+      "priceRange": [150, 400],
+      "amenities": ["Wi-Fi", "Breakfast", "Business Center"],
+      "roomTypes": [
+        {
+          "id": 201,
+          "type": "Standard",
+          "price": 150,
+          "capacity": 2,
+          "size": 22,
+          "available": true
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Mountain View Resort",
+      "chain": "Mountain View Resorts",
+      "rating": 5,
+      "address": "789 Hilltop Rd, Denver, CO",
+      "location": "Denver",
+      "priceRange": [300, 700],
+      "amenities": ["Wi-Fi", "Spa", "Restaurant", "Bar"],
+      "roomTypes": [
+        {
+          "id": 301,
+          "type": "Suite",
+          "price": 500,
+          "capacity": 4,
+          "size": 50,
+          "available": true
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Comfort Inn & Suites",
+      "chain": "Comfort Inn Collection",
+      "rating": 3,
+      "address": "321 Elm St, Seattle, WA",
+      "location": "Seattle",
+      "priceRange": [100, 300],
+      "amenities": ["Wi-Fi", "Parking", "Gym"],
+      "roomTypes": [
+        {
+          "id": 401,
+          "type": "Standard",
+          "price": 100,
+          "capacity": 2,
+          "size": 20,
+          "available": true
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Luxury Suites Miami",
+      "chain": "Luxury Resorts International",
+      "rating": 4,
+      "address": "654 Ocean Dr, Miami, FL",
+      "location": "Miami",
+      "priceRange": [250, 600],
+      "amenities": ["Wi-Fi", "Beach Access", "Pool"],
+      "roomTypes": [
+        {
+          "id": 501,
+          "type": "Deluxe",
+          "price": 300,
+          "capacity": 2,
+          "size": 30,
+          "available": true
+        },
+        {
+          "id": 502,
+          "type": "Suite",
+          "price": 600,
+          "capacity": 4,
+          "size": 60,
+          "available": true
+        }
+      ]
+    }
+
+  ]
+}
