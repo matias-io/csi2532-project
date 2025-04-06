@@ -22,7 +22,7 @@ import { DatePickerWithRange } from "@/components/date-range-picker"
 
 
 import Footer from '@/components/Footer';
-import Navbar from '@/components/Navbar';
+// import Navbar from '@/components/Navbar';
 
 
 export default function HotelsPage() {
@@ -178,6 +178,45 @@ export default function HotelsPage() {
                     </div>
                   </div>
 
+
+<Separator />
+
+                  <div>
+                    <h3 className="font-medium mb-3">Room Capacity</h3>
+                    <div className="space-y-2">
+                      {[
+                        { label: "1 Person", value: "1" },
+                        { label: "2 People", value: "2" },
+                        { label: "3 People", value: "3" },
+                        { label: "4+ People", value: "4" },
+                      ].map((capacity) => (
+                        <div key={capacity.value} className="flex items-center space-x-2">
+                          <Checkbox id={`capacity-${capacity.value}`} />
+                          <Label htmlFor={`capacity-${capacity.value}`} className="text-sm font-normal">
+                            {capacity.label}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <h3 className="font-medium mb-3">Room Size</h3>
+                    <div className="space-y-4">
+                      <Slider defaultValue={[25, 75]} min={15} max={150} step={5} />
+                      <div className="flex items-center justify-between">
+                        <div className="border rounded-md px-2 py-1 text-sm">25 m²</div>
+                        <div className="text-sm text-muted-foreground">to</div>
+                        <div className="border rounded-md px-2 py-1 text-sm">75 m²</div>
+                      </div>
+                    </div>
+                  </div>
+
+
+
+                  
                   <Button className="w-full">Apply Filters</Button>
                 </div>
               </CardContent>
@@ -202,6 +241,8 @@ export default function HotelsPage() {
 
             <div className="space-y-6">
               {[1, 2, 3, 4, 5].map((hotel) => (
+                <Link key={hotel} href={`/search/hotels/${hotel}`} className="block">
+
                 <Card key={hotel} className="overflow-hidden">
                   <CardContent className="p-0">
                     <div className="grid md:grid-cols-3 gap-4">
@@ -254,13 +295,15 @@ export default function HotelsPage() {
                             <span className="font-medium text-green-600">Available</span> for your dates
                           </div>
                           <Button asChild>
-                            <Link href={`/hotels/${hotel}`}>View Rooms</Link>
+                            <Link href={`/search/hotels/${hotel}/rooms/${hotel}`}>Book Now</Link>
                           </Button>
                         </div>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
+                </Link>
+
               ))}
             </div>
 

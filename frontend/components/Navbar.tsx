@@ -2,13 +2,15 @@
 
 import Link from 'next/link';
 import {
-  SignInButton,
-  SignUp,
-  SignUpButton,
+  // SignInButton,
+  // SignUp,
+  // SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,
 } from '@clerk/nextjs';
+import { Button } from '@/components/ui/button'; 
+
 
 export default function Navbar({ username }: { username?: string }) {
   return (
@@ -17,7 +19,7 @@ export default function Navbar({ username }: { username?: string }) {
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <Link href="/">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">Hello {username ?? 'Guest'}</h1>
+              <h1 className="text-2xl md:text-3xl font-bold">Hello {((username) ? username : 'Guest')}</h1>
               <p className="text-sm md:text-base opacity-90">
                 Book rooms across North America&apos;s top hotel chains.
               </p>
@@ -26,14 +28,27 @@ export default function Navbar({ username }: { username?: string }) {
 
           <div className="flex gap-4">
             <SignedOut>
-              <SignInButton  />
+              <Button variant="secondary" asChild> 
+                <Link href="/sign-in">Login</Link>
+                {/* <SignInButton  /> */}
+              </Button>
             </SignedOut>
             <SignedOut>
-              <SignUpButton  />
+              <Button variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white" asChild>
+                <Link href="/sign-up">Sign Up</Link>
+                {/* <SignUpButton  /> */}
+              </Button>
             </SignedOut>
 
             <SignedIn>
-              <UserButton />
+              <Button variant="secondary" asChild> 
+                <Link href="/dashboard">My Profile</Link>
+              </Button>
+            </SignedIn> 
+            <SignedIn>
+              <Button variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white" asChild>
+                <UserButton />
+              </Button>
             </SignedIn>
           </div>
         </div>

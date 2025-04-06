@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUser } from "@clerk/nextjs";
-import Footer from '../../../components/Footer';
+import Footer from '@/components/Footer';
 
 export default function AfterSignupPage() {
     const [sinNumber, setSinNumber] = useState('');
@@ -116,7 +116,7 @@ export default function AfterSignupPage() {
                     {/* Display SSO welcome message if user came through SSO */}
                     {isSSO && (
                         <div className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">
-                            Welcome! You've signed in using {authStrategy || 'SSO'}. 
+                            Welcome! You&apos;ve signed in using {authStrategy || 'SSO'}. 
                             Please complete your profile information below.
                         </div>
                     )}

@@ -1,5 +1,5 @@
 import { SignUp } from "@clerk/nextjs";
-import Footer from '../../../components/Footer';
+import Footer from '@/components/Footer';
 
 
 export default function Page() {
