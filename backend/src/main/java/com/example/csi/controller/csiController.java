@@ -10,6 +10,9 @@ import com.example.csi.annotation.ApiDescription;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -41,6 +44,12 @@ public class csiController {
     public ResponseEntity<String> getHello() {
         return ResponseEntity.ok("Hello, World!  <br> You are in the CSIController Subpages :)");
     }
+
+    @GetMapping("/start")
+    public ResponseEntity<String> getMethodName(@RequestParam String param) {
+        return ResponseEntity.ok("Sucessfully Started Backend Server!");
+    }
+    
 
 
     @GetMapping("/get/{tableName}")
