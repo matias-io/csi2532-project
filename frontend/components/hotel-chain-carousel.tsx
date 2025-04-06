@@ -102,7 +102,7 @@ export function HotelChainCarousel() {
                   <div>{chain.hotels} hotels</div>
                 </div>
                 <Button asChild className="w-full">
-                  <Link href={`/chains/${chain.id}`}>View Hotels</Link>
+                  <Link href={`/search/hotels/${chain.id}`}>View Hotels</Link>
                 </Button>
               </div>
             </CardContent>
