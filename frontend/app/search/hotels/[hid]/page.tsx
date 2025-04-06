@@ -6,17 +6,26 @@ import { Badge } from "@/components/ui/badge"
 import { BedDoubleIcon, CheckIcon, CoffeeIcon, MapPinIcon, StarIcon, WifiIcon } from "lucide-react"
 import Image from "next/image"
 
-import { useSearchParams } from 'next/navigation'
+// import { useSearchParams } from 'next/navigation'
+// import { useRouter } from 'next/router'
 
 
-export default function HotelDetailPage() {
-  // This would normally fetch hotel data based on the hid
-  const searchParams = useSearchParams()
+export default function HotelDetailPage( { params }: { params: { hid: string } }) {
   
-  if(!searchParams?.has('hid')) {
-    return <div>No hotel selected</div>
-  } else {
-    const hotelhid = searchParams.get('hid')
+  const { hid } = params
+  const hotelhid = hid || '1' // Default to '1' if no hid is provided
+  // const router = useRouter()
+  // const { hotelhid } = router.query
+
+
+  // This would normally fetch hotel data based on the hid
+  // const searchParams = useSearchParams({params})
+  
+
+  // if(!searchParams?.has('hid')) {
+  //   return <div>No hotel selected</div>
+  // } else {
+  //   const hotelhid = searchParams.get('hid')
 
 
  
@@ -190,6 +199,4 @@ export default function HotelDetailPage() {
       </div>
     </main>
   )
-}
-
 }

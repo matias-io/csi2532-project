@@ -19,13 +19,25 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 import { DatePickerWithRange } from "@/components/date-range-picker"
-
+// import { useSearchParams } from "next/navigation"
 
 import Footer from '@/components/Footer';
 // import Navbar from '@/components/Navbar';
 
 
 export default function HotelsPage() {
+
+
+  
+  // This would normally fetch hotel data based on the hid
+  // const searchParams = useSearchParams()
+  
+  // if(!searchParams?.has('location')) {
+  //   const location = searchParams?.get('location') //getting the location from the URL param
+  // } else {
+  //   const location= "" //default if not found
+  // }
+
   return (
     <main className="min-h-screen bg-muted/30">
       <div className="bg-primary text-primary-foreground py-8">
