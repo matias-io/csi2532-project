@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
+import Link  from "next/link"
 import {
   FilterIcon,
   MapPinIcon,
@@ -615,6 +616,7 @@ export default function HotelsPage() {
             <div className="space-y-6">
               {filteredHotels.map((hotel) => (
                 <Card key={hotel.id} className="overflow-hidden">
+                  
                   <CardContent className="p-0">
                     <div className="grid md:grid-cols-3 gap-4">
                       <div className="relative h-48 md:h-full">
@@ -680,6 +682,11 @@ export default function HotelsPage() {
                           <div className="text-sm">
                             <span className="font-medium text-green-600">Available</span> for your dates
                           </div>
+                          <Link href={`/search/hotels/${hotel.id}`} >
+                          <Button 
+                            disabled={loading}
+                          >View Chain</Button>
+                          </Link>
                           <Button 
                             onClick={() => handleBookNow(hotel.id)}
                             disabled={loading}
