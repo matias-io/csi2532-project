@@ -87,12 +87,12 @@ export default function EmployeeSettings() {
     guestId: ''
   });
 
-        const { user, isLoaded, isSignedIn } = useUser();
+        const { user, isLoaded } = useUser();
   const [guestDetails, setGuestDetails] = useState<Reservation | null>(null);
 
   const router = useRouter();
 
-  const URL = "https://test-deployment-iq7z.onrender.com/";
+  // const URL = "https://test-deployment-iq7z.onrender.com/";
 
 
   // Simulate fetching user data on component mount
