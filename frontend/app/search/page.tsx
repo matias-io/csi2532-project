@@ -94,7 +94,7 @@ export default function HotelsPage() {
     amenities: [],
     roomTypes: [],
     capacities: [],
-    sizeRange: [25, 75]
+    sizeRange: [15, 75]
   })
 
   const defaultStart = new Date()
