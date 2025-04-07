@@ -111,7 +111,7 @@ export default function Home() {
 
                 <TabsContent value="search">
                   <div className="grid gap-4 md:grid-cols-4">
-                    <div className="md:col-span-2">
+                    <div className="pt-4 md:col-span-2">
                       <Label htmlFor="location" className="text-primary-foreground">Location</Label>
                       <div className="relative mt-1">
                         <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -129,7 +129,7 @@ export default function Home() {
                       <Label htmlFor="dates" className="text-primary-foreground">Dates</Label>
                       <div className="grid grid-cols-2 gap-2 mt-1">
                         <div>
-                          <Label htmlFor="check-in" className="text-xs">Check-in</Label>
+                          <Label htmlFor="check-in" className="text-xs text-white">Check-in</Label>
                           <Input
                             id="check-in"
                             type="date"
@@ -142,7 +142,7 @@ export default function Home() {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="check-out" className="text-xs">Check-out</Label>
+                          <Label htmlFor="check-out" className="text-xs text-white">Check-out</Label>
                           <Input
                             id="check-out"
                             type="date"
@@ -158,7 +158,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="mt-4 flex justify-end">
-                    <Button className="w-full md:w-auto" onClick={handleSearch}>
+                    <Button className="bg-neutral-500 w-full md:w-auto" onClick={handleSearch}>
                       Search Available Rooms
                     </Button>
                   </div>

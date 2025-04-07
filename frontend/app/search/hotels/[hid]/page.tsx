@@ -16,11 +16,11 @@ import { use } from "react";
 
 
 type Hotel = {
-  id: number
-  name: string
-  description: string
-  rating: number
-  address: string
+  id: number | undefined
+  name: string | undefined
+  description: string | undefined
+  rating: number  | undefined
+  address: string | undefined
   amenities: string[]
   images: string[]
   rooms: {
@@ -41,6 +41,19 @@ type BookingStatus = {
   bookingId?: string
 }
 
+type HotelChain = {
+  chain_id: number | undefined;
+  central_office_address: string;
+  num_hotels: number;
+  contact_email: string;
+  contact_number: string;
+  name: string;
+  logo_url: string;
+  number_of_hotels: number;
+  hotel_chain_classification: number;
+  hotel_chain_images_url: string;
+};
+
 export default function HotelPage({ params }: { params: Promise<{ hid: string }> }) {
   const [hotel, setHotel] = useState<Hotel | null>(null)
   const [loading, setLoading] = useState(true)
@@ -50,16 +63,67 @@ export default function HotelPage({ params }: { params: Promise<{ hid: string }>
   const [bookingStatus, setBookingStatus] = useState<BookingStatus | null>(null)
   const { user } = useUser()
   const { hid } = use(params);
+  // let chain : HotelChain[] = [];
 
+
+  function findHotelChainByName(chainName: string, chain: HotelChain[]): HotelChain | null {
+  for (const hotel of chain as HotelChain[]) {
+    if (hotel.chain_id == Number(chainName)) {
+      console.log("Hotel found")
+      console.log(hotel.chain_id)
+      console.log(chainName)
+      console.log(hotel)
+      return hotel;
+    } else{
+      console.log(hotel.chain_id)
+      console.log(chainName)
+      console.log("Hotel not found")
+    }
+  }
+  return null;
+}
 
   //! API RECIEVE Fetch hotel data
   useEffect(() => {
     const fetchHotel = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/data/search/hotels/recieves/hotel-${hid}.json`)
+        const response = await fetch(`https://test-deployment-iq7z.onrender.com/get/hotelchain`)
         if (!response.ok) throw new Error("Hotel not found")
-        const data = await response.json()
+        const chain = await response.json()
+        const dataraw = findHotelChainByName(hid, chain)
+        const data = {
+            id: dataraw?.chain_id,
+            name: dataraw?.name,
+            description: "Luxury accommodations",
+            rating: dataraw?.hotel_chain_classification,
+            address: dataraw?.central_office_address,
+            amenities: ["Wi-Fi", "Pool", "Gym", "Restaurant", "Spa"],
+            images: [`https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/logo/${dataraw?.logo_url}`, 
+            `https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/hotel-images/hotel-chain/${dataraw?.hotel_chain_images_url}.jpg`],
+            rooms: [
+                {
+                  "id": 101,
+                  "type": "Standard",
+                  "description": "Comfortable room with city view",
+                  "price": 200,
+                  "size": 25,
+                  "capacity": 2,
+                  "amenities": ["Wi-Fi", "TV", "Air Conditioning"],
+                  "available": true
+                },
+                {
+                  "id": 102,
+                  "type": "Deluxe",
+                  "description": "Spacious room with king bed",
+                  "price": 350,
+                  "size": 35,
+                  "capacity": 2,
+                  "amenities": ["Wi-Fi", "TV", "Air Conditioning", "Mini Bar"],
+                   "available": false
+                }
+            ]
+        }
         setHotel(data)
       } catch (err) {
         setError(`Failed to load hotel details: ${err instanceof Error ? err.message : String(err)}`)
@@ -215,11 +279,11 @@ export default function HotelPage({ params }: { params: Promise<{ hid: string }>
         <div>
           <h1 className="text-3xl font-bold mb-2">{hotel.name}</h1>
           <div className="flex items-center gap-1 mb-4">
-            {Array(Math.floor(hotel.rating)).fill(0).map((_, i) => (
+            {Array(Math.floor(hotel.rating ?? 3)).fill(0).map((_, i) => (
               <StarIcon key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400" />
             ))}
             <span className="text-sm text-muted-foreground ml-1">
-              {hotel.rating.toFixed(1)}
+              {(hotel.rating ?? 3).toFixed(1)}
             </span>
           </div>
           <div className="flex items-center text-muted-foreground mb-6">
