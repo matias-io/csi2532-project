@@ -10,6 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Separator } from "@/components/ui/separator"
 import { SearchIcon } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { useUser } from "@clerk/nextjs";
+import { useRouter } from "next/navigation";
+
+
 
 // Mock user types
 type User = {
@@ -82,7 +86,14 @@ export default function EmployeeSettings() {
     roomId: '',
     guestId: ''
   });
+
+        const { user, isLoaded, isSignedIn } = useUser();
   const [guestDetails, setGuestDetails] = useState<Reservation | null>(null);
+
+  const router = useRouter();
+
+  const URL = "https://test-deployment-iq7z.onrender.com/";
+
 
   // Simulate fetching user data on component mount
   useEffect(() => {
@@ -107,6 +118,23 @@ export default function EmployeeSettings() {
       } finally {
         setLoading(prev => ({...prev, profile: false}));
       }
+
+        if (isLoaded && user) {
+            try {
+                // Check if user already has SIN in metadata (might happen with returning SSO users)
+                const existingSin = user.unsafeMetadata?.sinNumber;
+                if (!existingSin) {
+                    // User already completed this step, redirect to user page
+                    router.push('/sign-up/aftersignup');
+                } else {
+                  router.push('/dashboard');
+                }
+            } catch (err) {
+                console.error('Error checking user metadata:', err);
+                // Don't redirect, let the user try to complete the form
+            }
+        }
+
     };
 
     fetchUserData();
@@ -457,7 +485,7 @@ export default function EmployeeSettings() {
                           <Input 
                             id="zip" 
                             value={userData.zip} 
-                            onChange={handleInputChange}
+                         
                           />
                         </div>
                         {isEmployee && (
@@ -466,8 +494,7 @@ export default function EmployeeSettings() {
                               <Label htmlFor="ssn">Social Security Number</Label>
                               <Input 
                                 id="ssn" 
-                                value={userData.ssn || ''} 
-                                onChange={handleInputChange}
+                                value={userData.ssn || ''}  disabled
                               />
                             </div>
                             <div className="space-y-2">
@@ -475,7 +502,7 @@ export default function EmployeeSettings() {
                               <Input 
                                 id="hireDate" 
                                 type="date" 
-                                value={userData.hireDate || ''} 
+                                value={userData.hireDate || ''} disabled
                                 onChange={handleInputChange}
                               />
                             </div>
