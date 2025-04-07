@@ -27,6 +27,8 @@ type ApiHotel = {
   rating: number
   num_rooms: number
   address: string
+  price: number
+  size: number
   contact_email: string
   contact_number: number
   ammenities: string
@@ -82,6 +84,8 @@ export default function HotelsPage() {
     message: string
     bookingId?: string
   } | null>(null)
+  const [location, setLocation] = useState("")
+  
 
   const [filters, setFilters] = useState<Filters>({
     priceRange: [100, 500],
@@ -119,11 +123,11 @@ export default function HotelsPage() {
           chain: chainNames[hotel.chain_id] || `Chain ${hotel.chain_id}`,
           rating: hotel.rating,
           location: hotel.address,
-          price: Math.floor(Math.random() * (500 - 100 + 1)) + 100,
+          price: hotel.price,
           amenities: hotel.ammenities.split(',').map(a => a.trim()),
           roomType: ["Single", "Double", "Suite", "Family Room"][Math.floor(Math.random() * 4)],
           capacity: hotel.capacity,
-          size: Math.floor(Math.random() * (75 - 25 + 1)) + 25,
+          size: hotel.size, //Math.floor(Math.random() * (75 - 25 + 1)) + 25,
           image_url: `https://eircgcvplkpzypudsajc.supabase.co/storage/v1/object/public/hotel-images/room${hotel.image_url}.jpg`,
           description: `A beautiful hotel located at ${hotel.address}. Contact us at ${hotel.contact_email} or ${hotel.contact_number}.`,
           contactEmail: hotel.contact_email,
@@ -144,6 +148,17 @@ export default function HotelsPage() {
 
     fetchHotels()
   }, [])
+
+  const handleSearch = () => {
+    const params = new URLSearchParams()
+    if (location) params.append("location", location)
+    if (dates.from && dates.to) {
+      params.append("from", dates.from.toISOString())
+      params.append("to", dates.to.toISOString())
+    }
+    window.location.href = `/search?${params.toString()}`
+  }
+
 
   const applyFilters = (hotelsToFilter: Hotel[], locationQuery: string) => {
     const filtered = hotelsToFilter.filter(hotel => {
@@ -182,42 +197,122 @@ export default function HotelsPage() {
     applyFilters(hotels, searchParams?.get('location') || '')
   }
 
+
+    const simulateBookingApi = async (bookingData: {
+  userId: string;
+  hotelId: number;
+  startDate: Date;
+  endDate: Date;
+  guestCount: number;
+}): Promise<{
+    success: boolean
+    message: string
+    bookingId?: string
+  }> => {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        // Simulate 80% success rate for demo
+        const success = Math.random() > 0.2
+        
+        console.log(bookingData)
+        if (success) {
+          resolve({
+            success: true,
+            message: "Booking confirmed! Your reservation ID is BKG-" + Math.random().toString(36).substring(2, 10),
+            bookingId: "BKG-" + Math.random().toString(36).substring(2, 10)
+          })
+        } else {
+          resolve({
+            success: false,
+            message: "Room no longer available. Please select another room or dates."
+          })
+        }
+      }, 1000) // Simulate network delay
+    })
+  }
+
   const handleBookNow = async (hotelId: number) => {
+    //?dummy endpoint
     if (!user) {
-      setBookingStatus({ success: false, message: "Please sign in to book a room" })
+      setBookingStatus({
+        success: false,
+        message: "Please sign in to book a room"
+      })
       return
     }
 
+    setBookingStatus(null)
+
     try {
       setLoading(true)
-      setBookingStatus(null)
-      const hotel = hotels.find(h => h.id === hotelId)
-      const nights = Math.ceil((dates.to.getTime() - dates.from.getTime()) / (1000 * 60 * 60 * 24))
-      const totalPrice = hotel ? hotel.price * nights : 0
+      
+      // Mock API request payload
+      const bookingData = {
+        userId: user.id,
+        hotelId: hotelId,
+        startDate: dates.from,
+        endDate: dates.to,
+        guestCount: 1, // Default to 1, could be made configurable
+      }
 
-      const response = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user.id,
-          hotelId,
-          startDate: dates.from.toISOString(),
-          endDate: dates.to.toISOString(),
-          totalPrice
-        }),
-      })
 
-      const result = await response.json()
+      // For demo, we'll simulate an API call with a timeout
+      const response = await simulateBookingApi(bookingData)
+
       setBookingStatus({
-        success: result.success,
-        message: result.message,
-        bookingId: result.bookingId
+        success: response.success,
+        message: response.message,
+        bookingId: response.bookingId
       })
-    } catch (error) {
-      setBookingStatus({ success: false, message: `Booking failed. Please try again. ${error}` })
+
+    } catch (err) {
+      setBookingStatus({
+        success: false,
+        message: "Booking failed. Please try again." + err
+      }
+      
+    )
     } finally {
       setLoading(false)
     }
+    
+    
+    //! real endpoint
+    // if (!user) {
+    //   setBookingStatus({ success: false, message: "Please sign in to book a room" })
+    //   return
+    // }
+
+    // try {
+    //   setLoading(true)
+    //   setBookingStatus(null)
+    //   const hotel = hotels.find(h => h.id === hotelId)
+    //   const nights = Math.ceil((dates.to.getTime() - dates.from.getTime()) / (1000 * 60 * 60 * 24))
+    //   const totalPrice = hotel ? hotel.price * nights : 0
+
+    //   const response = await fetch('/api/bookings', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify({
+    //       userId: user.id,
+    //       hotelId,
+    //       startDate: dates.from.toISOString(),
+    //       endDate: dates.to.toISOString(),
+    //       totalPrice
+    //     }),
+    //   })
+
+    //   const result = await response.json()
+    //   setBookingStatus({
+    //     success: result.success,
+    //     message: result.message,
+    //     bookingId: result.bookingId
+    //   })
+    // } catch (error) {
+    //   setBookingStatus({ success: false, message: `Booking failed. Please try again. ${error}` })
+    // } finally {
+    //   setLoading(false)
+    // }
   }
 
   if (loading && hotels.length === 0) {
@@ -243,8 +338,9 @@ export default function HotelsPage() {
                     id="location"
                     placeholder="City, hotel, or landmark"
                     defaultValue={searchParams?.get('location') || ''}
+                    onChange={e => setLocation(e.target.value)}
                     className="pl-8 bg-white/10 border-white/20 text-primary-foreground placeholder:text-primary-foreground/50"
-                  />
+                  /> 
                 </div>
               </div>
               <div className="md:col-span-2">
@@ -268,6 +364,11 @@ export default function HotelsPage() {
                     onChange={(e) => setDates({ from: dates.from, to: e.target.value ? new Date(e.target.value) : defaultEnd })}
                     className="bg-white/10 border-white/20 text-primary-foreground"
                   />
+                </div>
+                <div className="mt-4 col-span-8 flex justify-end">
+                  <Button className="bg-neutral-500 w-full md:w-auto" onClick={handleSearch}>
+                    Fetch New Rooms 
+                  </Button>
                 </div>
               </div>
             </div>
