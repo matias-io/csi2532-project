@@ -1,7 +1,9 @@
 // You can change this, but just add things, do not delete things here
 package com.example.csi.controller;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.net.URLEncoder;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
@@ -10,8 +12,6 @@ import com.example.csi.annotation.ApiDescription;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 
@@ -68,12 +68,22 @@ public class csiController {
     }
 
 
-    @GetMapping("/hotels/1")
-    
-    public ResponseEntity<?> hotelsID(@RequestParam String param) {
-        return new  ResponseEntity.status("skdjnsd");
+    @GetMapping("get/hotels/{location}")
+    public ResponseEntity<?> getHotelsByLocation(@PathVariable String location) {
+        try {
+            String getUrl = supabaseUrl + "/rest/v1/hotel?address=eq." + URLEncoder.encode(location, StandardCharsets.UTF_8);
+            HttpEntity<Void> entity = new HttpEntity<>(createHeaders());
+
+            ResponseEntity<String> response = restTemplate.exchange(getUrl, HttpMethod.GET, entity, String.class);
+
+            return response.getStatusCode().is2xxSuccessful()
+                    ? ResponseEntity.ok(response.getBody())
+                    : ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to retrieve data from hotels table.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
+        }
     }
-    
+
 
     @PostMapping("/post/{tableName}")
     public ResponseEntity<?> postToTable(@PathVariable String tableName, @RequestBody Object requestBody) {

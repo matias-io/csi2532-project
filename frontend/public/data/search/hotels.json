@@ -13,6 +13,22 @@
       "size": 35,
       "image": "/hotel1.jpg"
     },
+
+    {
+      "id": 4,
+      "name": "Grand Hotel New York",
+      "chain": "Luxury Resorts International",
+      "rating": 4,
+      "location": "toronto",
+      "price": 250,
+      "amenities": ["Wi-Fi", "Pool", "Gym", "Restaurant"],
+      "roomType": "Deluxe",
+      "capacity": 2,
+      "size": 35,
+      "image": "/hotel1.jpg"
+    },
+
+
     {
       "id": 2,
       "name": "Urban Stay Downtown",
