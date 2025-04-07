@@ -10,13 +10,10 @@ import { Label } from "@/components/ui/label"
 import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
 import {
-  BedDoubleIcon,
-  CoffeeIcon,
   FilterIcon,
   MapPinIcon,
   SearchIcon,
   StarIcon,
-  WifiIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
 } from "lucide-react"
