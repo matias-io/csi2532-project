@@ -1,8 +1,6 @@
-# DDL Constraints 
+# DDL Constraints
 
-
-### The Sql Code can be found here [SQL code](Template.sql)
-
+### The Sql Code can be found here [Sql code &amp; Constraints](Template.sql)
 
 ## The DDL constraints table
 
