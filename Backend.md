@@ -14,9 +14,9 @@ If you don't have time, or simply are not interested, here are the basics :
 
 The basic idea of an API is like a simple website URL which you can access and it will return data.
 
-That being said, you can access some simple and interesting API's, such as `https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit`
+That being said, you can access some simple and interesting API's, such as `https://v2.jokeapi.dev/joke/Any?flags=flag-value
 
-It's an API which will give you jokes, to keep it appropriate, I added some flags which the creator provided.
+It's an API which will give you jokes, I added what some  flags to a API url looks like.
 
 That's what an API does. It usually gives back a JSON file.
 
