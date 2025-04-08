@@ -4,7 +4,7 @@ Thank you and welcome.
 
 Here, I go over the basics of what I wrote in the backend folder.
 
-First of all, if you do not know how API's and springboot work and are curious to learn more, please make sure to visit this video; Very helpful and exactly how I learned springBoot : `https://www.youtube.com/watch?v=31KTdfRH6nY`
+First of all, if you do not know how API's and springboot work and are curious to learn more, please make sure to visit this video; Very helpful and exactly how I learned springBoot : ` https://www.youtube.com/watch?v=31KTdfRH6nY `
 
 If you don't have time, or simply are not interested, here are the basics :
 
@@ -14,7 +14,7 @@ If you don't have time, or simply are not interested, here are the basics :
 
 The basic idea of an API is like a simple website URL which you can access and it will return data.
 
-That being said, you can access some simple and interesting API's, such as `https://v2.jokeapi.dev/joke/Any?flags=flag-value
+That being said, you can access some simple and interesting API's, such as ` https://v2.jokeapi.dev/joke/Any?flags=flag-value ` (Ps, I did not build or currently / have ever manage this endpoint, so if there is anything it says which you do not agree with, please visit ` https://v2.jokeapi.dev/ ` for more help. )
 
 It's an API which will give you jokes, I added what some  flags to a API url looks like.
 
@@ -40,9 +40,9 @@ PUT = Update
 
 DELETE = Delete
 
-**In my backend, I implemented only CRD methods;**
+**In the backend, I implemented only CRUD methods;**
 
-So POST, GET, DELETE
+So POST, GET, DELETE & PUT
 
 ---
 
@@ -110,7 +110,15 @@ And
 there are other methods which you can find [here](backend/src/main/java/com/example/csi/controller/csiController.java) , but imo, these are the only 3 you need to know about. The others are mostly helper methods to allow the tableTree to work.
 
 ---
+# IF you want to find all the endpoints this API accepts, you can visit 
 
+` https://test-deployment-iq7z.onrender.com/does-not-exist ` 
+
+I made it so that it's a beautiful HTML page which maps all of the methods/ requests we implemented! All the steps are the same! 
+
+Currently, this is not a secure way of doing things as if someone has the backend API, they can inject data to our tables which will make us very vulnarable, as such, in real production, we would extend CLERK to also secure the backend. 
+
+---
 # Contact
 
 If you need me, you all know how to contact me.
